@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Math Lab ครูคุ้ม</title>
+<meta name="description" content="รวมเว็บเรียนคณิตศาสตร์ ม.1 ม.3 ม.5 สื่ออินเทอร์แอคทีฟ และผลงานของครูคุ้ม โรงเรียนวังโพรงพิทยาคม">
+<meta name="theme-color" content="#0b0a1f">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&family=Sora:wght@600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b0a1f;--bg2:#141233;--ink:#f5f3ff;--mut:#b4b0d6;--line:rgba(255,255,255,.12);--glass:rgba(255,255,255,.06);--glass2:rgba(255,255,255,.1);
+ --sans:"Prompt",system-ui,sans-serif;--disp:"Sora","Prompt",sans-serif;--mono:"JetBrains Mono",monospace;color-scheme:dark}
+:root[data-theme=light]{--bg:#f3f1ff;--bg2:#ffffff;--ink:#1a1638;--mut:#5d5880;--line:rgba(26,22,56,.12);--glass:rgba(255,255,255,.65);--glass2:rgba(255,255,255,.9);color-scheme:light}
+@media (prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#f3f1ff;--bg2:#ffffff;--ink:#1a1638;--mut:#5d5880;--line:rgba(26,22,56,.12);--glass:rgba(255,255,255,.65);--glass2:rgba(255,255,255,.9);color-scheme:light}}
+*{box-sizing:border-box}html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;font:400 16px/1.65 var(--sans);color:var(--ink);background:var(--bg);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;background:radial-gradient(40% 35% at 15% 10%,rgba(124,92,255,.35),transparent 70%),radial-gradient(35% 30% at 90% 20%,rgba(255,92,170,.25),transparent 70%),radial-gradient(40% 35% at 60% 95%,rgba(0,214,190,.2),transparent 70%)}
+.wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 16px}
+a{color:inherit}button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #ffd84d;outline-offset:3px;border-radius:12px}
+.top{position:sticky;top:0;z-index:30;backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);background:color-mix(in srgb,var(--bg) 70%,transparent);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:10px;height:60px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;font:800 18px var(--disp);letter-spacing:-.01em}
+.gem{width:36px;height:36px;border-radius:11px;background:linear-gradient(135deg,#8b6cff,#ff5ca8 55%,#ffd84d);box-shadow:inset 0 2px 0 rgba(255,255,255,.5),inset 0 -6px 12px rgba(0,0,0,.25),0 8px 20px -6px rgba(139,108,255,.8);display:grid;place-items:center;color:#fff;font:800 16px var(--disp)}
+.sp{flex:1}.ib{width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:var(--glass);display:grid;place-items:center;cursor:pointer}
+nav.cats{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:10px 0}nav.cats::-webkit-scrollbar{display:none}
+nav.cats a{flex:none;text-decoration:none;font-size:14px;font-weight:500;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--glass);white-space:nowrap}
+nav.cats a:hover{background:var(--glass2)}
+/* hero */
+.hero{position:relative;padding:34px 0 10px;min-height:440px}
+.hero h1{font:800 clamp(44px,13vw,104px)/.95 var(--disp);letter-spacing:-.04em;margin:0;position:relative;z-index:2}
+.hero h1 span{background:linear-gradient(100deg,#a58bff,#ff6fb5 45%,#ffd84d 80%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero h1 small{display:block;font:700 clamp(22px,6.4vw,38px)/1.25 var(--sans);letter-spacing:0;margin-top:12px;color:var(--ink)}
+.hero p{max-width:520px;color:var(--mut);font-size:17px;margin:14px 0 18px;position:relative;z-index:2}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--glass);font:500 13px var(--mono);letter-spacing:.04em;position:relative;z-index:2}
+.badge i{width:8px;height:8px;border-radius:50%;background:#2ee6b6;box-shadow:0 0 10px #2ee6b6}
+/* 3D floating objects */
+.scene{position:absolute;right:-10px;top:10px;width:min(52vw,460px);height:420px;perspective:900px;pointer-events:none;z-index:1}
+@media(max-width:700px){.hero{min-height:0}.scene{position:relative;right:auto;top:auto;width:100%;height:230px;margin:6px 0 -10px;transform:scale(.78);transform-origin:center top}}
+.obj{position:absolute;transform-style:preserve-3d;animation:float 7s ease-in-out infinite}
+.cube{width:110px;height:110px;transform-style:preserve-3d;animation:spin 16s linear infinite}
+.cube div{position:absolute;inset:0;border-radius:20px;display:grid;place-items:center;font:800 44px var(--disp);color:#fff;border:1px solid rgba(255,255,255,.35);box-shadow:inset 0 0 30px rgba(255,255,255,.25)}
+.cube .f1{transform:translateZ(55px);background:linear-gradient(135deg,#8b6cff,#5b3df5)}.cube .f2{transform:rotateY(180deg) translateZ(55px);background:linear-gradient(135deg,#ff6fb5,#e03c8a)}
+.cube .f3{transform:rotateY(90deg) translateZ(55px);background:linear-gradient(135deg,#2ee6b6,#0aa889)}.cube .f4{transform:rotateY(-90deg) translateZ(55px);background:linear-gradient(135deg,#ffd84d,#f2a516);color:#3a2700}
+.cube .f5{transform:rotateX(90deg) translateZ(55px);background:linear-gradient(135deg,#6ea8ff,#3c6af0)}.cube .f6{transform:rotateX(-90deg) translateZ(55px);background:linear-gradient(135deg,#a58bff,#7b5cff)}
+.orb{width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff 0 6%,#ffb3d8 14%,#ff5ca8 45%,#8a1f5b 100%);box-shadow:0 30px 60px -20px rgba(255,92,168,.6);display:grid;place-items:center;font:800 40px var(--disp);color:#fff}
+.orb.b{width:84px;height:84px;background:radial-gradient(circle at 32% 28%,#fff 0 6%,#b9f7e6 14%,#2ee6b6 45%,#05634f 100%);box-shadow:0 30px 60px -20px rgba(46,230,182,.6);font-size:30px}
+.ring{width:150px;height:150px;border-radius:50%;border:16px solid transparent;background:linear-gradient(var(--bg),var(--bg)) padding-box,linear-gradient(135deg,#ffd84d,#ff6fb5,#8b6cff) border-box;transform:rotateX(65deg);box-shadow:0 0 40px rgba(255,216,77,.3)}
+@keyframes spin{to{transform:rotateX(360deg) rotateY(360deg)}}
+@keyframes float{50%{translate:0 -18px}}
+@media (prefers-reduced-motion:reduce){.obj,.cube{animation:none}}
+/* grade picker */
+.pick{display:flex;gap:8px;flex-wrap:wrap;position:relative;z-index:2;align-items:center}
+.pick b{font-size:14px;color:var(--mut);font-weight:500;margin-right:4px}
+.pick button{border:1px solid var(--line);background:var(--glass);border-radius:14px;padding:9px 16px;cursor:pointer;font-weight:600;min-height:44px;transition:transform .15s}
+.pick button[aria-pressed=true]{background:linear-gradient(135deg,#8b6cff,#ff5ca8);border-color:transparent;color:#fff;box-shadow:0 10px 24px -10px #ff5ca8}
+.pick button:active{transform:scale(.96)}
+/* sections */
+.sec{padding:40px 0 6px;scroll-margin-top:110px}
+.sh{display:flex;align-items:flex-end;gap:12px;margin-bottom:16px}
+.sh .ic{flex:none;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:26px;background:var(--glass2);border:1px solid var(--line);box-shadow:inset 0 2px 0 rgba(255,255,255,.15),0 14px 28px -16px rgba(0,0,0,.6)}
+.sh h2{margin:0;font:700 clamp(23px,6vw,32px)/1.2 var(--sans)}.sh p{margin:2px 0 0;color:var(--mut);font-size:14.5px}
+.grid{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}@media(min-width:960px){.grid.g3{grid-template-columns:1fr 1fr 1fr}}
+/* 3D card */
+.card{position:relative;display:block;text-decoration:none;border-radius:24px;padding:18px;min-height:150px;background:linear-gradient(160deg,var(--glass2),var(--glass));border:1px solid var(--line);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 24px 40px -26px rgba(0,0,0,.7);transform-style:preserve-3d;transition:transform .25s ease,box-shadow .25s;will-change:transform;overflow:hidden}
+.card::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(400px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.16),transparent 45%);opacity:0;transition:opacity .25s}
+.card:hover::after{opacity:1}.card:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 34px 60px -28px rgba(0,0,0,.8)}
+.card .tile{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;font:800 20px var(--disp);color:#fff;transform:translateZ(30px);box-shadow:inset 0 2px 0 rgba(255,255,255,.45),inset 0 -8px 14px rgba(0,0,0,.25),0 14px 24px -10px var(--c2)}
+.card h3{margin:14px 0 2px;font:700 19px/1.35 var(--sans);transform:translateZ(20px)}.card p{margin:0;color:var(--mut);font-size:14.5px;transform:translateZ(14px)}
+.card .go{position:absolute;right:16px;top:16px;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--glass2);border:1px solid var(--line);font-weight:700;transform:translateZ(26px)}
+.card .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;transform:translateZ(14px)}.card .tags span{font:500 12px var(--mono);padding:3px 9px;border-radius:999px;border:1px solid var(--line);background:var(--glass)}
+.card .st{display:inline-block;margin-top:10px;font:600 12px var(--sans);padding:3px 10px;border-radius:999px}
+.st.wip{background:rgba(255,216,77,.18);color:#ffd84d;border:1px solid rgba(255,216,77,.4)}.st.lock{background:rgba(110,168,255,.15);color:#8ab8ff;border:1px solid rgba(110,168,255,.35)}.st.done{background:rgba(46,230,182,.15);color:#2ee6b6;border:1px solid rgba(46,230,182,.35)}
+:root[data-theme=light] .st.wip{color:#9a6b00}:root[data-theme=light] .st.lock{color:#2557c9}:root[data-theme=light] .st.done{color:#06806a}
+@media (prefers-color-scheme:light){:root:not([data-theme=dark]) .st.wip{color:#9a6b00}:root:not([data-theme=dark]) .st.lock{color:#2557c9}:root:not([data-theme=dark]) .st.done{color:#06806a}}
+.card.mine{outline:2px solid #ff6fb5;outline-offset:3px}.card .you{position:absolute;left:18px;top:-1px;font:700 11px var(--sans);background:linear-gradient(90deg,#8b6cff,#ff5ca8);color:#fff;padding:2px 10px;border-radius:0 0 10px 10px}
+.big .card{min-height:190px}
+/* qr */
+.qrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.qr{border-radius:20px;padding:14px;background:var(--glass2);border:1px solid var(--line);text-align:center}
+.qr .box{background:#fff;border-radius:12px;padding:8px;display:inline-block}.qr .box img,.qr .box canvas{display:block;width:118px;height:118px}
+.qr b{display:block;margin-top:8px;font-size:14px}.qr small{color:var(--mut);font:500 11px var(--mono);word-break:break-all}
+.pbtn{margin-top:12px;border:1px solid var(--line);background:var(--glass2);padding:10px 18px;border-radius:14px;cursor:pointer;font-weight:600;min-height:44px}
+.about{display:grid;gap:16px;grid-template-columns:1fr}@media(min-width:760px){.about{grid-template-columns:260px 1fr}}
+.avatar{border-radius:28px;padding:22px;text-align:center;background:linear-gradient(160deg,var(--glass2),var(--glass));border:1px solid var(--line)}
+.avatar .face{width:116px;height:116px;margin:0 auto 12px;border-radius:34px;display:grid;place-items:center;font:800 34px var(--disp);color:#fff;background:linear-gradient(135deg,#8b6cff,#ff5ca8 60%,#ffd84d);box-shadow:inset 0 3px 0 rgba(255,255,255,.5),inset 0 -12px 20px rgba(0,0,0,.25),0 20px 40px -14px rgba(255,92,168,.7);transform:rotate(-6deg)}
+.avatar h3{margin:0;font:700 20px var(--sans)}.avatar p{margin:2px 0 0;color:var(--mut);font-size:14px}
+.fb{display:inline-flex;align-items:center;gap:10px;margin-top:14px;padding:11px 18px;border-radius:16px;text-decoration:none;font-weight:600;color:#fff;background:linear-gradient(135deg,#1877f2,#0b5fd6);box-shadow:inset 0 2px 0 rgba(255,255,255,.3),0 12px 24px -10px #1877f2;min-height:48px}
+.bio{border-radius:28px;padding:20px;background:linear-gradient(160deg,var(--glass2),var(--glass));border:1px solid var(--line)}
+.bio ul{list-style:none;margin:0;padding:0;display:grid;gap:10px}.bio li{display:flex;gap:12px;align-items:flex-start}.bio li b{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--glass2);border:1px solid var(--line);font-size:18px}
+.bio li span{padding-top:5px}.bio small{display:block;color:var(--mut);font-size:13px}
+footer{margin-top:50px;border-top:1px solid var(--line);padding:24px 0 40px;color:var(--mut);font-size:13.5px;position:relative;z-index:1}
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+@media print{body::before,.top,.hero,nav.cats,.sec:not(#qr),footer{display:none!important}body{background:#fff;color:#000}#qr{padding:0}.qr{border:1px solid #999;background:#fff;break-inside:avoid}.qr small{color:#333}.pbtn{display:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="logo" href="#"><span class="gem">π</span><span>Math Lab ครูคุ้ม</span></a><span class="sp"></span>
+<button class="ib" id="thm" aria-label="สลับโหมดสว่าง/มืด"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/></svg></button></div></header>
+<main class="wrap">
+ <section class="hero">
+  <span class="badge"><i></i>WANG PHRONG PHITTHAYAKHOM · 2569</span>
+  <h1><span>Math Lab</span><small>เรียนคณิตให้สนุก<br>ทุกชั้นในที่เดียว</small></h1>
+  <p>เลือกชั้นที่เรียนอยู่ แล้วกดการ์ดเพื่อเข้าเว็บเรียน มีบทเรียน แล็บ โจทย์ฝึก และแบบทดสอบ ใช้ได้ทั้งมือถือและคอมพิวเตอร์</p>
+  <div class="pick" role="group" aria-label="เลือกชั้นเรียน"><b>ฉันเรียน</b><button data-g="m1" aria-pressed="false">ม.1</button><button data-g="m3" aria-pressed="false">ม.3</button><button data-g="m5" aria-pressed="false">ม.5</button></div>
+  <div class="scene" aria-hidden="true">
+   <div class="obj" style="left:38%;top:40px"><div class="cube"><div class="f1">π</div><div class="f2">Σ</div><div class="f3">√</div><div class="f4">i</div><div class="f5">∞</div><div class="f6">%</div></div></div>
+   <div class="obj" style="left:2%;top:180px;animation-delay:-2s"><div class="orb">x²</div></div>
+   <div class="obj" style="left:72%;top:230px;animation-delay:-4s"><div class="orb b">φ</div></div>
+   <div class="obj" style="left:18%;top:20px;animation-delay:-1s"><div class="ring"></div></div>
+  </div>
+ </section>
+ <nav class="cats" aria-label="หมวด"><a href="#learn">📚 เว็บเรียน</a><a href="#interactive">🎮 สื่ออินเทอร์แอคทีฟ</a><a href="#posn">🏆 สอวน.</a><a href="#project">💡 โครงงาน</a><a href="#innov">🛠️ นวัตกรรม</a><a href="#trainer">🎤 วิทยากร</a><a href="#master">🎓 ป.โท</a><a href="#archive">🗂️ งานส่งมอบแล้ว</a><a href="#qr">📱 QR Code</a><a href="#about">👋 ผู้จัดทำ</a></nav>
+ <div id="sections"></div>
+<section class="sec" id="about"><div class="sh"><div class="ic">👋</div><div><h2>ผู้จัดทำ</h2><p>ติดต่อ สอบถาม หรือแจ้งปัญหาการใช้งานเว็บ</p></div></div>
+ <div class="about"><div class="avatar"><div class="face">ครูคุ้ม</div><h3>นายอชิตพล บุณรัตน์</h3><p>Kru Kum · ครูคุ้ม</p>
+  <a class="fb" href="https://www.facebook.com/KumEzio/" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.6 1.6-1.6h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3z"/></svg>Facebook: KumEzio</a></div>
+  <div class="bio"><ul>
+   <li><b>🏫</b><span>ครู คศ.1 กลุ่มสาระการเรียนรู้คณิตศาสตร์<small>โรงเรียนวังโพรงพิทยาคม จังหวัดพิษณุโลก</small></span></li>
+   <li><b>🎓</b><span>นักศึกษาปริญญาโท กศ.ม. สาขาคณิตศาสตร์ศึกษา<small>มหาวิทยาลัยนเรศวร</small></span></li>
+   <li><b>🤝</b><span>ครูที่ปรึกษาโครงงานนวัตกรรม AI ของนักเรียน<small>และฝึกซ้อมเวทคณิต</small></span></li>
+   <li><b>🏆</b><span>สอนและพัฒนาสื่อ สอวน. คณิตศาสตร์<small>ทฤษฎีจำนวน และแบบทดสอบก่อน/หลังเรียน</small></span></li>
+   <li><b>🎤</b><span>วิทยากรอบรม<small>Smart Money Camp · Plan Lab 2570 อบรมแผนปฏิบัติการ</small></span></li>
+   <li><b>💻</b><span>พัฒนาเว็บเรียนและนวัตกรรมการศึกษา<small>เว็บเรียน ม.1 ม.3 ม.5 สื่ออินเทอร์แอคทีฟ และระบบงานในโรงเรียน</small></span></li>
+  </ul></div></div></section>
+ <section class="sec" id="qr"><div class="sh"><div class="ic">📱</div><div><h2>QR Code เว็บเรียน</h2><p>สแกนเข้าเว็บได้ทันที · กดพิมพ์เพื่อติดห้องเรียน</p></div></div><div class="qrs" id="qrs"></div><button class="pbtn" onclick="print()">🖨️ พิมพ์ QR Code</button></section>
+</main>
+<footer><div class="wrap">ครูคุ้ม อชิตพล บุณรัตน์ · <a href="https://www.facebook.com/KumEzio/" target="_blank" rel="noopener">Facebook</a> · กลุ่มสาระการเรียนรู้คณิตศาสตร์ โรงเรียนวังโพรงพิทยาคม<br>เว็บเรียนทุกเว็บจัดทำเพื่อการศึกษา ใช้ควบคู่กับหนังสือเรียน ไม่มีวัตถุประสงค์ทางการค้า · ฟอนต์ Prompt, Sora, JetBrains Mono (SIL Open Font License)</div></footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const G='https://mathdevth.github.io/';
+const C=[['#8b6cff','#5b3df5'],['#ff6fb5','#e03c8a'],['#2ee6b6','#0aa889'],['#ffd84d','#f2a516'],['#6ea8ff','#3c6af0'],['#ff8a5c','#e5532a']];
+const S=[
+ {id:'learn',ic:'📚',t:'เว็บเรียนคณิตศาสตร์',d:'บทเรียน แล็บ โจทย์ฝึก แบบทดสอบก่อน/หลังเรียน และใบงาน PDF',big:1,items:[
+  {g:'m1',k:'ม.1',t:'คณิตศาสตร์ ม.1',d:'บทเรียน ใบงาน และเส้นทางการเรียนรู้ ม.1',u:G+'math-m1/',c:0,tags:['ม.1','ล็อกอินได้']},
+  {g:'m3',k:'ม.3',t:'คณิตศาสตร์ ม.3',d:'อสมการ แยกตัวประกอบ สมการกำลังสอง ความคล้าย ฟังก์ชันกำลังสอง สถิติ และแนวข้อสอบ O-NET',u:G+'math-m3/',c:1,tags:['ม.3','O-NET']},
+  {g:'m5',k:'ม.5',t:'คณิตศาสตร์พื้นฐาน ม.5',d:'เลขยกกำลัง ฟังก์ชัน ลำดับและอนุกรม ดอกเบี้ยและมูลค่าของเงิน',u:G+'math-m5/',c:3,tags:['ม.5','เทอม 1–2']},
+  {g:'m5',k:'ม.5+',t:'คณิตศาสตร์เพิ่มเติม ม.5',d:'จำนวนเชิงซ้อน หลักการนับเบื้องต้น ความน่าจะเป็น',u:G+'math-m5-plus/',c:2,tags:['ม.5','เพิ่มเติม']},
+  {g:'m5',k:'฿',t:'The Financial Classroom',d:'ห้องเรียนการเงิน เรียนรู้เพิ่มเติมคู่กับหน่วยดอกเบี้ยและมูลค่าของเงิน',u:G+'financial-classroom/',c:4,tags:['การเงิน']}]},
+ {id:'interactive',ic:'🎮',t:'สื่อแบบอินเทอร์แอคทีฟ',d:'เล่นไปเรียนไป',items:[
+  {g:'m1',k:'Q',t:'Rational Quest | ม.1',d:'สื่อเรื่องจำนวนตรรกยะ สำหรับ ม.1',u:G+'RationalQuestM1/',c:1,tags:['ม.1']},
+  {g:'m1',k:'AR',t:'Number Line Pin AR',d:'สื่อเส้นจำนวนแบบ AR',u:G+'number-line-ar/',c:2,tags:['AR','เส้นจำนวน']},
+  {g:'m1',k:'ℚ',t:'Rational Quest — จำนวนตรรกยะ ม.1',d:'สื่อเรื่องจำนวนตรรกยะ สำหรับ ม.1',u:'https://rational-quest-m1.haragugoodday.chatgpt.site/',c:3,tags:['ม.1']},
+  {g:'m3',k:'y=x²',t:'PARABOLA LAB | ห้องทดลองพาราโบลา ม.3',d:'ห้องทดลองพาราโบลา สำหรับ ม.3',u:'https://parabola-lab-m3.haragugoodday.chatgpt.site/',c:1,tags:['ม.3']},
+  {g:'m5',k:'→',t:'VECTOR QUEST M.5',d:'เก่งเวกเตอร์ทีละก้าว สำหรับ ม.5',u:'https://vector-lab-m5-wpp.haragugoodday.chatgpt.site/#play',c:4,tags:['ม.5','เวกเตอร์']}]},
+ {id:'posn',ic:'🏆',t:'ผลงาน สอวน. คณิตศาสตร์',d:'สื่อสำหรับเตรียมแข่งขันโอลิมปิกวิชาการ',items:[
+  {k:'φ',t:'ฟังก์ชันในทฤษฎีจำนวน: ห้องทดลอง φ τ σ μ',d:'ห้องทดลองฟังก์ชัน φ τ σ μ ในทฤษฎีจำนวน',u:G+'number-theory-functions/',c:0,tags:['ทฤษฎีจำนวน']},
+  {k:'NT',t:'ศูนย์การเรียนรู้ทฤษฎีจำนวน',d:'แบบทดสอบก่อนเรียนและหลังเรียน สอวน. คณิตศาสตร์',u:G+'number-theory-portal-kahoot/',c:5,tags:['ก่อน/หลังเรียน']}]},
+ {id:'project',ic:'💡',t:'ผลงานโครงงาน',d:'',items:[
+  {k:'AI',t:'พอเพียงพอร์ท (Suffi-Port) - AI Finance',d:'AI Finance',u:G+'suffi-port/',c:3,tags:['AI','การเงิน']}]},
+ {id:'innov',ic:'🛠️',t:'นวัตกรรมที่พัฒนา',d:'ระบบช่วยงานในโรงเรียน',items:[
+  {k:'✓',t:'WPP Student Attendance 2026',d:'บันทึกข้อมูลการมาเรียน พร้อมระบบแจ้งเตือนผ่าน Telegram',u:'https://script.google.com/a/macros/wppschool.ac.th/s/AKfycbyEysYchub1Jr8scd706tyCHnR42FvPpumQhRYPtBpMRDH6UteATcjjwVIqwjH4fmTgQw/exec',c:2,st:['lock','ใช้บัญชีโรงเรียน @wppschool.ac.th']},
+  {k:'P',t:'Smart Plan WPP - นโยบายและแผน',d:'ระบบงานแผนงานของโรงเรียน',u:G+'wpp-smart-plan/',c:4,st:['wip','ไม่แล้วเสร็จ เนื่องจากมีการปรับตำแหน่ง']},
+  {k:'฿',t:'The Saving Game (เกมการออม)',d:'เกมการออม',u:'https://happy-saving-classroom.haragugoodday.chatgpt.site/',c:3},
+  {k:'📋',t:'ติดตามงานค้าง | ครูคุ้ม',d:'ระบบติดตามงานค้างของนักเรียน',u:'https://kru-kum-homework-2569.haragugoodday.chatgpt.site/',c:0},
+  {k:'🧹',t:'ระบบตรวจเวร สภานักเรียน',d:'ระบบตรวจเวรของสภานักเรียนโรงเรียนวังโพรงพิทยาคม',u:G+'wpp-cleaning/',c:1,st:['wip','รอพัฒนาต่อจากนักเรียน']}]},
+ {id:'trainer',ic:'🎤',t:'วิทยากรอบรม',d:'สื่อประกอบการอบรมที่เป็นวิทยากร',items:[
+  {k:'$',t:'SMART MONEY CAMP',d:'12 กันยายน 2569',u:'https://smart-money-camp-day.haragugoodday.chatgpt.site/',c:3},
+  {k:'🏅',t:'Smart Money Camp | ห้องคะแนนกลาง',d:'ห้องคะแนนกลางของค่าย',u:'https://smart-money-camp-hub.haragugoodday.chatgpt.site/',c:1},
+  {k:'2570',t:'Plan Lab 2570',d:'อบรมแผนปฏิบัติการ',u:'https://wpp-plan-workshop-2570.haragugoodday.chatgpt.site/',c:4}]},
+ {id:'master',ic:'🎓',t:'ชิ้นงาน ป.โท',d:'มหาวิทยาลัยนเรศวร',items:[
+  {k:'PL',t:'Personalised Learning Hub',d:'มหาวิทยาลัยนเรศวร · Digital Storytelling',u:G+'pl-digital-storytelling/',c:0},
+  {k:'✦',t:'TGT Magic Academy',d:'วังโพรงพิทยาคม',u:G+'tgt-sorting-app/',c:1},
+  {k:'AI',t:'WPP Math AI',d:'ต้องเข้าสู่ระบบก่อนใช้งาน',u:G+'wpp-math-ai/',c:2}]},
+ {id:'archive',ic:'🗂️',t:'งานอื่น ๆ ที่เคยพัฒนา',d:'ส่งมอบให้ผู้รับผิดชอบต่อแล้ว',items:[
+  {k:'แผน',t:'เว็บไซต์งานนโยบายและแผน',d:'Google Sites โรงเรียนวังโพรงพิทยาคม',u:'https://sites.google.com/wppschool.ac.th/planwpp/%E0%B8%AB%E0%B8%99%E0%B8%B2%E0%B9%81%E0%B8%A3%E0%B8%81?authuser=0',c:4,st:['done','ส่งมอบแล้ว']},
+  {k:'QA',t:'งานประกันคุณภาพการศึกษา ว.พ.พ.',d:'Google Sites งานประกันคุณภาพการศึกษา',u:'https://sites.google.com/wppschool.ac.th/qawpp',c:5,st:['done','ส่งมอบแล้ว']}]}];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let grade='';try{grade=localStorage.getItem('hub.grade')||''}catch(e){}
+function card(x){const c=C[x.c];return`<a class="card reveal${grade&&x.g===grade?' mine':''}" href="${esc(x.u)}" target="_blank" rel="noopener" style="--c2:${c[1]}">${grade&&x.g===grade?'<span class="you">ชั้นของฉัน</span>':''}<span class="go">↗</span><div class="tile" style="background:linear-gradient(135deg,${c[0]},${c[1]})">${x.k}</div><h3>${esc(x.t)}</h3><p>${esc(x.d)}</p>${x.st?`<span class="st ${x.st[0]}">${esc(x.st[1])}</span>`:''}${x.tags?`<div class="tags">${x.tags.map(t=>`<span>${esc(t)}</span>`).join('')}</div>`:''}</a>`}
+function render(){$s.innerHTML=S.map(s=>{let it=s.items;if(grade&&s.id==='learn'){it=[...it].sort((a,b)=>(b.g===grade)-(a.g===grade))}
+ return`<section class="sec" id="${s.id}"><div class="sh"><div class="ic">${s.ic}</div><div><h2>${s.t}</h2>${s.d?`<p>${s.d}</p>`:''}</div></div><div class="grid${s.items.length>=3?' g3':''}${s.big?' big':''}">${it.map(card).join('')}</div></section>`}).join('');tilt();reveal()}
+const $s=document.getElementById('sections');
+document.querySelectorAll('.pick button').forEach(b=>{b.setAttribute('aria-pressed',b.dataset.g===grade);b.onclick=()=>{grade=grade===b.dataset.g?'':b.dataset.g;try{localStorage.setItem('hub.grade',grade)}catch(e){}
+ document.querySelectorAll('.pick button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.g===grade));render();if(grade)document.getElementById('learn').scrollIntoView({behavior:'smooth'})}});
+function tilt(){if(matchMedia('(hover:none)').matches||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ document.querySelectorAll('.card').forEach(c=>{c.onmousemove=e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;c.style.transform=`perspective(800px) rotateX(${(.5-y)*10}deg) rotateY(${(x-.5)*12}deg) translateZ(6px)`;c.style.setProperty('--mx',x*100+'%');c.style.setProperty('--my',y*100+'%')};c.onmouseleave=()=>{c.style.transform=''}})}
+function reveal(){const io='IntersectionObserver' in window?new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.08}):null;document.querySelectorAll('.reveal').forEach(el=>io?io.observe(el):el.classList.add('in'))}
+render();
+/* QR */
+const Q=S[0].items.concat(S[1].items);const qb=document.getElementById('qrs');qb.innerHTML=Q.map((x,i)=>`<div class="qr"><div class="box" id="q${i}"></div><b>${esc(x.t)}</b><small>${esc(x.u.replace('https://',''))}</small></div>`).join('');
+const mk=()=>{if(!window.QRCode){qb.querySelectorAll('.box').forEach(b=>b.innerHTML='<small style="color:#333">โหลด QR ไม่ได้</small>');return}Q.forEach((x,i)=>new QRCode(document.getElementById('q'+i),{text:x.u,width:236,height:236,correctLevel:QRCode.CorrectLevel.M}))};
+if(document.readyState==='complete')mk();else addEventListener('load',mk);
+/* theme */
+document.getElementById('thm').onclick=()=>{const r=document.documentElement,cur=r.dataset.theme||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'),nx=cur==='dark'?'light':'dark';r.dataset.theme=nx;try{localStorage.setItem('hub.theme',nx)}catch(e){}};
+try{const t=localStorage.getItem('hub.theme');if(t)document.documentElement.dataset.theme=t}catch(e){}
+</script>
+</body>
+</html>
