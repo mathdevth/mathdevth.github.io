@@ -106,7 +106,7 @@ footer{margin-top:50px;border-top:1px solid var(--line);padding:24px 0 40px;colo
   <span class="badge"><i></i>BY ACHITTAPON BOONRAT · KRU KUM</span>
   <h1><span>Math Lab</span><small>เรียนคณิตให้สนุก<br>ทุกชั้นในที่เดียว</small></h1>
   <p>เลือกชั้นที่เรียนอยู่ แล้วกดการ์ดเพื่อเข้าเว็บเรียน มีบทเรียน แล็บ โจทย์ฝึก และแบบทดสอบ ใช้ได้ทั้งมือถือและคอมพิวเตอร์</p>
-  <div class="pick" role="group" aria-label="เลือกชั้นเรียน"><b>ฉันเรียน</b><button data-g="m1" aria-pressed="false">ม.1</button><button data-g="m3" aria-pressed="false">ม.3</button><button data-g="m5" aria-pressed="false">ม.5</button></div>
+  <div class="pick" role="group" aria-label="เลือกชั้นเรียน"><b>ฉันเรียน</b><button data-g="m1" aria-pressed="false">ม.1</button><button data-g="m2" aria-pressed="false">ม.2</button><button data-g="m3" aria-pressed="false">ม.3</button><button data-g="m5" aria-pressed="false">ม.5</button></div>
   <div class="scene" aria-hidden="true">
    <div class="obj" style="left:38%;top:40px"><div class="cube"><div class="f1">π</div><div class="f2">Σ</div><div class="f3">√</div><div class="f4">i</div><div class="f5">∞</div><div class="f6">%</div></div></div>
    <div class="obj" style="left:2%;top:180px;animation-delay:-2s"><div class="orb">x²</div></div>
@@ -137,6 +137,7 @@ const C=[['#8b6cff','#5b3df5'],['#ff6fb5','#e03c8a'],['#2ee6b6','#0aa889'],['#ff
 const S=[
  {id:'learn',ic:'📚',t:'เว็บเรียนคณิตศาสตร์',d:'บทเรียน แล็บ โจทย์ฝึก แบบทดสอบก่อน/หลังเรียน และใบงาน PDF',big:1,items:[
   {g:'m1',k:'ม.1',t:'คณิตศาสตร์ ม.1',d:'บทเรียน ใบงาน และเส้นทางการเรียนรู้ ม.1',u:G+'math-m1/',c:0,tags:['ม.1','ล็อกอินได้']},
+  {g:'m2',k:'IS2',t:'IS2 สตูดิโอนักค้นคว้า',d:'การสื่อสารและการนำเสนอ ม.2 วางโครงร่าง เขียนรายงาน 2,500 คำ อ้างอิง APA โพสเตอร์ ซ้อมนำเสนอ และใช้ AI อย่างนักค้นคว้า',u:G+'is-m2/',c:5,tags:['ม.2','IS']},
   {g:'m3',k:'ม.3',t:'คณิตศาสตร์ ม.3',d:'อสมการ แยกตัวประกอบ สมการกำลังสอง ความคล้าย ฟังก์ชันกำลังสอง สถิติ และแนวข้อสอบ O-NET',u:G+'math-m3/',c:1,tags:['ม.3','O-NET']},
   {g:'m5',k:'ม.5',t:'คณิตศาสตร์พื้นฐาน ม.5',d:'เลขยกกำลัง ฟังก์ชัน ลำดับและอนุกรม ดอกเบี้ยและมูลค่าของเงิน',u:G+'math-m5/',c:3,tags:['ม.5','เทอม 1–2']},
   {g:'m5',k:'ม.5+',t:'คณิตศาสตร์เพิ่มเติม ม.5',d:'จำนวนเชิงซ้อน หลักการนับเบื้องต้น ความน่าจะเป็น',u:G+'math-m5-plus/',c:2,tags:['ม.5','เพิ่มเติม']},
