@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>แดชบอร์ดครู · Math Lab ครูคุ้ม</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--ink:#16202e;--soft:#5d6878;--line:#e2e6ec;--blue:#2f6fdb;
+ --h0:#eceff3;--h1:#f4c7c3;--h2:#f8e1a8;--h3:#cdeccf;--h4:#7fcf95;--hi:#16202e;--font:"Anuphan",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10141b;--card:#181e28;--ink:#e8edf4;--soft:#9aa6b6;--line:#2a3342;--blue:#6ea0ff;
+ --h0:#222a36;--h1:#6b2c2a;--h2:#6b5520;--h3:#2d5a3a;--h4:#2f8a4f;--hi:#e8edf4}}
+:root[data-theme="dark"]{--bg:#10141b;--card:#181e28;--ink:#e8edf4;--soft:#9aa6b6;--line:#2a3342;--blue:#6ea0ff;--h0:#222a36;--h1:#6b2c2a;--h2:#6b5520;--h3:#2d5a3a;--h4:#2f8a4f;--hi:#e8edf4}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--font)}
+[hidden]{display:none!important}
+.wrap{max-width:1280px;margin:auto;padding:18px 16px 60px}
+header{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+h1{font-size:1.45rem;margin:0}h2{font-size:1.1rem;margin:0 0 8px}.mute{color:var(--soft)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:14px}
+button,select,input{font:inherit;color:inherit}
+button{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 12px;cursor:pointer}
+button.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+select,input{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:6px 10px}
+.ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}.ctl label{display:grid;gap:2px;font-size:13px;color:var(--soft)}
+.seg{display:flex;flex-wrap:wrap;gap:6px}.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi div{border:1px solid var(--line);border-radius:12px;padding:8px 12px}.kpi b{display:block;font-size:1.5rem}
+.hm{overflow:auto;max-height:70vh;border:1px solid var(--line);border-radius:12px}
+.hm table{border-collapse:separate;border-spacing:0;font-size:14px;min-width:100%}
+.hm th,.hm td{padding:5px 8px;border-bottom:1px solid var(--line);white-space:nowrap;text-align:center}
+.hm thead th{position:sticky;top:0;background:var(--card);z-index:2;font-weight:600;vertical-align:bottom;white-space:normal;min-width:84px;font-size:13px}
+.hm td.nm,.hm th.nm{position:sticky;left:0;background:var(--card);text-align:left;z-index:1}.hm thead th.nm{z-index:3}
+.hm td.c{cursor:pointer;font-variant-numeric:tabular-nums;font-weight:600;color:var(--hi)}
+.hm td.c small{display:block;font-weight:400;font-size:11px;opacity:.75}
+.v0{background:var(--h0)}.v1{background:var(--h1)}.v2{background:var(--h2)}.v3{background:var(--h3)}.v4{background:var(--h4)}
+.hm tfoot td{position:sticky;bottom:0;background:var(--card);font-weight:600;border-top:2px solid var(--ink)}
+.lg{display:flex;flex-wrap:wrap;gap:10px;font-size:13px;align-items:center}.lg i{display:inline-block;width:16px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.help{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.help>div{border:1px solid var(--line);border-radius:12px;padding:10px}.help ul{margin:6px 0 0;padding-left:18px}
+.modal{position:fixed;inset:0;background:#0007;display:grid;place-items:center;padding:16px;z-index:9}
+.modal .card{max-width:560px;width:100%;max-height:80vh;overflow:auto;margin:0}
+table.ls{border-collapse:collapse;width:100%;font-size:14px}table.ls td,table.ls th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left}
+.err{color:#c0392b}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div><p class="mute" style="margin:0">Math Lab ครูคุ้ม · สำหรับครู</p><h1>แดชบอร์ดครู: เห็นทั้งห้องในจอเดียว</h1></div>
+<div id="acct"></div></header>
+
+<section class="card" id="login" hidden>
+ <h2>เข้าสู่ระบบด้วยบัญชีครู</h2>
+ <form class="ctl" id="lgF" autocomplete="on"><label>อีเมลครู<input id="lgE" type="email" autocomplete="username" required></label><label>รหัสผ่าน<input id="lgP" type="password" autocomplete="current-password" required></label><button class="pri" type="submit">เข้าสู่ระบบ</button></form>
+ <p class="err" id="lgM"></p>
+</section>
+
+<div id="app" hidden>
+ <section class="card">
+  <div class="ctl">
+   <label>วิชา<select id="sSub"></select></label>
+   <label>ห้อง<select id="sCls"></select></label>
+   <label>ภาคเรียน<select id="sTerm"></select></label>
+   <label>แสดงในช่อง<select id="sMode"><option value="post">หลังเรียน (ครั้งล่าสุด)</option><option value="best">หลังเรียน (ครั้งดีที่สุด)</option><option value="pre">ก่อนเรียน</option><option value="gain">พัฒนาการ (หลัง − ก่อน)</option></select></label>
+   <button id="reload">โหลดข้อมูลใหม่</button><button id="csv">ดาวน์โหลด CSV</button>
+  </div>
+  <p class="mute" id="stat" style="margin:8px 0 0"></p>
+ </section>
+ <section class="card"><div class="kpi" id="kpi"></div></section>
+ <section class="card">
+  <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px"><h2 style="margin:0">ผลรายคน × รายหน่วย (ร้อยละ)</h2>
+  <div class="lg"><span><i class="v4"></i>85 ขึ้นไป</span><span><i class="v3"></i>70–84</span><span><i class="v2"></i>50–69</span><span><i class="v1"></i>ต่ำกว่า 50</span><span><i class="v0"></i>ยังไม่ทำ</span></div></div>
+  <div class="hm" id="hm"></div>
+  <p class="mute" style="font-size:13px;margin:6px 0 0">กดที่ช่องเพื่อดูประวัติการทำทุกครั้ง · ตัวเล็กใต้ตัวเลขคือคะแนนก่อนเรียน</p>
+ </section>
+ <section class="card"><h2>ต้องช่วยก่อนคาบหน้า</h2><p class="mute" style="margin:0 0 8px">รายชื่อที่หลังเรียนต่ำกว่า 50% หรือยังไม่ได้ทำ แยกตามหน่วย</p><div class="help" id="help"></div></section>
+</div>
+<p class="mute" style="font-size:12px;margin-top:20px">© 2569 ครูคุ้ม โรงเรียนวังโพรงพิทยาคม · ข้อมูลนักเรียนเห็นได้เฉพาะบัญชีครู</p>
+</div>
+
+<div class="modal" id="mod" hidden><div class="card"><div id="modB"></div><p style="text-align:right;margin:10px 0 0"><button id="modX">ปิด</button></p></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SUB={
+ m1:{n:'คณิต ม.1',stu:'students',test:'tests',drill:'drills'},
+ m3:{n:'คณิต ม.3',stu:'m3students',test:'m3tests'},
+ m5:{n:'คณิตพื้นฐาน ม.5',stu:'m5students',test:'m5tests',f:t=>!String(t.unitName||'').startsWith('เพิ่มเติม')},
+ m5x:{n:'คณิตเพิ่มเติม ม.5',stu:'m5students',test:'m5tests',f:t=>String(t.unitName||'').startsWith('เพิ่มเติม')}};
+let DB=null,S={sub:'m1',cls:'',term:'2',mode:'post'},CACHE={};
+try{Object.assign(S,JSON.parse(localStorage.getItem('kkdash')||'{}'))}catch(e){}
+const keep=()=>{try{localStorage.setItem('kkdash',JSON.stringify(S))}catch(e){}};
+
+function load(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+async function init(){
+ if(window.__FAKEDB){DB=window.__FAKEDB;return start()}
+ let cfg=null;for(const u of ['config.json','https://mathdevth.github.io/math-m1/config.json']){try{const j=await fetch(u,{cache:'no-store'}).then(r=>r.ok?r.json():null);if(j&&j.firebase&&j.firebase.apiKey){cfg=j.firebase;break}}catch(e){}}
+ if(!cfg){$('acct').innerHTML='<span class="err">ไม่พบค่า Firebase (ตรวจ config.json ของ math-m1)</span>';return}
+ const v='https://cdn.jsdelivr.net/npm/firebase@10.12.2/';
+ await load(v+'firebase-app-compat.js');await load(v+'firebase-auth-compat.js');await load(v+'firebase-firestore-compat.js');
+ firebase.initializeApp(cfg);const fs=firebase.firestore();
+ DB={auth:firebase.auth(),get:p=>fs.doc(p).get().then(d=>d.exists?{id:d.id,...d.data()}:null),
+  q:(c,w)=>{let r=fs.collection(c);(w||[]).forEach(x=>r=r.where(...x));return r.get().then(s=>s.docs.map(d=>({id:d.id,...d.data()})))}};
+ start()}
+function start(){
+ $('lgF').onsubmit=async e=>{e.preventDefault();$('lgM').textContent='';try{await DB.auth.signInWithEmailAndPassword($('lgE').value.trim(),$('lgP').value)}catch(err){$('lgM').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
+ DB.auth.onAuthStateChanged(async u=>{$('app').hidden=true;
+  if(!u){$('login').hidden=false;$('acct').innerHTML='';return}
+  const t=await DB.get('teachers/'+u.uid).catch(()=>null);
+  $('acct').innerHTML=`<span class="mute">${esc(u.email||'')}</span> <button id="out">ออกจากระบบ</button>`;$('out').onclick=()=>DB.auth.signOut();
+  if(!t){$('login').hidden=false;$('lgM').textContent='บัญชีนี้ไม่ใช่บัญชีครู';return}
+  $('login').hidden=true;$('app').hidden=false;setup()})}
+
+function setup(){
+ $('sSub').innerHTML=Object.entries(SUB).map(([k,v])=>`<option value="${k}" ${k===S.sub?'selected':''}>${v.n}</option>`).join('');
+ $('sMode').value=S.mode;
+ $('sSub').onchange=e=>{S.sub=e.target.value;S.cls='';keep();fetchData()};
+ $('sCls').onchange=e=>{S.cls=e.target.value;keep();render()};
+ $('sTerm').onchange=e=>{S.term=e.target.value;keep();render()};
+ $('sMode').onchange=e=>{S.mode=e.target.value;keep();render()};
+ $('reload').onclick=()=>{delete CACHE[S.sub];fetchData()};
+ $('csv').onclick=csv;$('modX').onclick=()=>$('mod').hidden=true;$('mod').onclick=e=>{if(e.target.id==='mod')$('mod').hidden=true};
+ fetchData()}
+
+async function fetchData(){const c=SUB[S.sub];$('stat').textContent='กำลังโหลด…';
+ try{if(!CACHE[S.sub]){const [stu,tests,drills]=await Promise.all([DB.q(c.stu),DB.q(c.test),c.drill?DB.q(c.drill).catch(()=>[]):[]]);CACHE[S.sub]={stu,tests:c.f?tests.filter(c.f):tests,drills}}}
+ catch(e){$('stat').innerHTML='<span class="err">โหลดข้อมูลไม่สำเร็จ ตรวจกฎ Firestore ว่าบัญชีครูอ่านได้</span>';return}
+ const D=CACHE[S.sub];
+ const cls=[...new Set(D.stu.map(s=>s.cls).filter(Boolean))].sort((a,b)=>String(a).localeCompare(b,'th',{numeric:true}));
+ if(S.cls&&!cls.includes(S.cls))S.cls='';if(!S.cls&&cls.length)S.cls=cls[0];
+ $('sCls').innerHTML=`<option value="*">ทุกห้อง</option>`+cls.map(x=>`<option ${x===S.cls?'selected':''}>${esc(x)}</option>`).join('');if(S.cls==='*')$('sCls').value='*';
+ const terms=[...new Set(D.tests.filter(t=>t.type!=='onet').map(t=>String(t.term)))].sort();
+ if(!terms.includes(S.term))S.term=terms.includes('2')?'2':(terms[terms.length-1]||'*');
+ $('sTerm').innerHTML=`<option value="*">ทุกภาคเรียน</option>`+terms.map(t=>`<option value="${t}" ${t===S.term?'selected':''}>ภาคเรียนที่ ${t}</option>`).join('');if(S.term==='*')$('sTerm').value='*';
+ render()}
+
+const ms=v=>v?.toDate?v.toDate().getTime():(v?.seconds?v.seconds*1000:(v?new Date(v).getTime():0));
+const td=v=>{const t=ms(v);return t?new Date(t).toLocaleString('th-TH',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}):'–'};
+const pct=t=>t.total?Math.round(t.score/t.total*100):0;
+const lv=v=>v==null?0:v>=85?4:v>=70?3:v>=50?2:1;
+let VIEW=null;
+function render(){const D=CACHE[S.sub];if(!D)return;
+ const stu=D.stu.filter(s=>S.cls==='*'||s.cls===S.cls).sort((a,b)=>String(a.cls).localeCompare(b.cls,'th',{numeric:true})||(+a.no||0)-(+b.no||0)||String(a.name).localeCompare(b.name,'th'));
+ const ids=new Set(stu.map(s=>s.uid||s.id)),sids=new Set(stu.map(s=>s.sid));
+ const T=D.tests.filter(t=>t.type!=='onet'&&(S.term==='*'||String(t.term)===S.term)&&(ids.has(t.uid)||sids.has(t.sid)));
+ const units=[...new Map(T.map(t=>[`${t.term}-${t.unit}`,{k:`${t.term}-${t.unit}`,term:+t.term,unit:+t.unit,name:String(t.unitName||'').replace(/^เพิ่มเติม:\s*/,'')}])).values()].sort((a,b)=>a.term-b.term||a.unit-b.unit);
+ const cell={};T.forEach(t=>{const k=(t.uid||t.sid)+'|'+t.term+'-'+t.unit;(cell[k]=cell[k]||[]).push(t)});
+ const val=(s,u)=>{const a=(cell[(s.uid||s.id)+'|'+u.k]||[]).concat(s.uid?[]:[]).sort((x,y)=>ms(x.time)-ms(y.time));
+  const post=a.filter(t=>t.type==='post'),pre=a.filter(t=>t.type==='pre');
+  const lp=post.length?pct(post[post.length-1]):null,bp=post.length?Math.max(...post.map(pct)):null,fp=pre.length?pct(pre[0]):null;
+  const v=S.mode==='pre'?fp:S.mode==='best'?bp:S.mode==='gain'?(lp!=null&&fp!=null?lp-fp:null):lp;return{a,lp,bp,fp,v}};
+ const drill=D.drills||[];const dBy={};drill.forEach(d=>{const k=d.uid;(dBy[k]=dBy[k]||[]).push(d)});
+ const showDrill=!!SUB[S.sub].drill;
+ VIEW={stu,units,val,dBy};
+ // heatmap
+ if(!stu.length){$('hm').innerHTML='<p class="mute" style="padding:12px">ยังไม่มีบัญชีนักเรียนในวิชานี้</p>';$('kpi').innerHTML='';$('help').innerHTML='';$('stat').textContent='';return}
+ const head=`<thead><tr><th class="nm">เลขที่ · ชื่อ</th>${units.map(u=>`<th title="${esc(u.name)}">ภาค ${u.term} หน่วย ${u.unit}<br><span class="mute" style="font-weight:400">${esc(u.name).slice(0,22)}</span></th>`).join('')}<th>เฉลี่ย</th>${S.sub==='m1'||S.sub==='m3'?'<th>หัวข้อที่ผ่าน</th>':''}${showDrill?'<th>ฝึกในคาบ<br><span class="mute" style="font-weight:400">ถูกครั้งแรก</span></th>':''}<th>เข้าล่าสุด</th></tr></thead>`;
+ const colAgg=units.map(()=>[]);
+ const rows=stu.map(s=>{const vs=units.map((u,i)=>{const r=val(s,u);if(r.v!=null)colAgg[i].push(r.v);return r});const got=vs.filter(r=>r.v!=null);const avg=got.length?Math.round(got.reduce((a,r)=>a+r.v,0)/got.length):null;
+  const tp=s.topics?Object.values(s.topics).filter(v=>v.right>=5).length:null;
+  const dd=(dBy[s.uid||s.id]||[]).sort((a,b)=>ms(b.time)-ms(a.time));const dl=dd[0];
+  return`<tr><td class="nm">${S.cls==='*'?esc(s.cls)+' · ':''}${esc(s.no)} ${esc(s.name)}</td>${vs.map((r,i)=>`<td class="c ${S.mode==='gain'?(r.v==null?'v0':r.v>=20?'v4':r.v>=1?'v3':r.v===0?'v2':'v1'):'v'+lv(r.v)}" data-s="${esc(s.uid||s.id)}" data-u="${i}">${r.v==null?'–':(S.mode==='gain'&&r.v>0?'+':'')+r.v}${S.mode==='post'&&r.fp!=null?`<small>ก่อน ${r.fp}</small>`:''}</td>`).join('')}
+  <td class="c v${S.mode==='gain'?0:lv(avg)}">${avg??'–'}</td>${S.sub==='m1'||S.sub==='m3'?`<td>${tp??'–'}</td>`:''}${showDrill?`<td title="${dl?esc(dl.cname||dl.c):''}">${dl?`${dl.first}/${dl.goal} <small class="mute">${td(dl.time)}</small>`:'–'}</td>`:''}<td class="mute" style="font-size:12px">${td(s.lastSeen)}</td></tr>`}).join('');
+ const foot=`<tfoot><tr><td class="nm">เฉลี่ยทั้งห้อง</td>${colAgg.map(a=>`<td>${a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):'–'}<small class="mute" style="display:block;font-weight:400">${a.length}/${stu.length} คน</small></td>`).join('')}<td></td>${S.sub==='m1'||S.sub==='m3'?'<td></td>':''}${showDrill?'<td></td>':''}<td></td></tr></tfoot>`;
+ $('hm').innerHTML=units.length?`<table>${head}<tbody>${rows}</tbody>${foot}</table>`:`<p class="mute" style="padding:12px">ยังไม่มีผลแบบทดสอบในภาคเรียนนี้ (${stu.length} คนในห้อง)</p>`;
+ $('hm').querySelectorAll('td.c[data-u]').forEach(td=>td.onclick=()=>hist(td.dataset.s,+td.dataset.u));
+ // KPI
+ const allPost=[],allPre=[];let below=0;stu.forEach(s=>units.forEach(u=>{const r=val(s,u);if(r.lp!=null){allPost.push(r.lp);if(r.lp<50)below++}if(r.fp!=null)allPre.push(r.fp)}));
+ const av=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):'–';
+ const active=stu.filter(s=>ms(s.lastSeen)>Date.now()-7*864e5).length;
+ const cover=units.length?Math.round(stu.reduce((n,s)=>n+units.filter(u=>val(s,u).lp!=null).length,0)/(stu.length*units.length)*100):0;
+ $('kpi').innerHTML=`<div>นักเรียนในห้อง<b>${stu.length}</b></div><div>เข้าเว็บใน 7 วัน<b>${active}</b></div><div>ทำหลังเรียนแล้ว<b>${cover}%</b>ของช่องทั้งหมด</div><div>เฉลี่ยก่อนเรียน<b>${av(allPre)}</b></div><div>เฉลี่ยหลังเรียน<b>${av(allPost)}</b></div><div>ช่องที่ต่ำกว่า 50%<b>${below}</b></div>`;
+ // help
+ $('help').innerHTML=units.length?units.map(u=>{const low=[],none=[];stu.forEach(s=>{const r=val(s,u);if(r.lp==null)none.push(s);else if(r.lp<50)low.push([s,r.lp])});
+  return`<div><b>ภาค ${u.term} หน่วย ${u.unit} ${esc(u.name)}</b><div class="mute" style="font-size:13px">ต่ำกว่า 50%: ${low.length} คน · ยังไม่ทำ: ${none.length} คน</div>${low.length?`<ul>${low.sort((a,b)=>a[1]-b[1]).map(([s,v])=>`<li>${esc(s.no)} ${esc(s.name)} <b>${v}%</b></li>`).join('')}</ul>`:''}${none.length?`<details><summary class="mute" style="font-size:13px">ดูคนที่ยังไม่ทำ</summary><ul>${none.map(s=>`<li>${esc(s.no)} ${esc(s.name)}</li>`).join('')}</ul></details>`:''}</div>`}).join(''):'<p class="mute">ยังไม่มีข้อมูล</p>';
+ $('stat').textContent=`${SUB[S.sub].n} · ${S.cls==='*'?'ทุกห้อง':'ห้อง '+S.cls} · ${units.length} หน่วย · ${T.length} ครั้งที่ส่งแบบทดสอบ · หลังเรียนนับครั้งล่าสุดตามเกณฑ์ภาคเรียนนี้`}
+
+function hist(sid,i){const s=VIEW.stu.find(x=>(x.uid||x.id)===sid),u=VIEW.units[i],r=VIEW.val(s,u);
+ $('modB').innerHTML=`<h2>${esc(s.name)} · ชั้น ${esc(s.cls)} เลขที่ ${esc(s.no)}</h2><p class="mute">ภาค ${u.term} หน่วย ${u.unit} ${esc(u.name)}</p>
+ ${r.a.length?`<table class="ls"><tr><th>เวลา</th><th>แบบทดสอบ</th><th>คะแนน</th><th>%</th></tr>${r.a.map(t=>`<tr><td>${td(t.time)}</td><td>${t.type==='pre'?'ก่อนเรียน':'หลังเรียน'}</td><td>${t.score}/${t.total}</td><td>${pct(t)}</td></tr>`).join('')}</table>`:'<p>ยังไม่ได้ทำแบบทดสอบหน่วยนี้</p>'}`;
+ $('mod').hidden=false}
+
+function csv(){if(!VIEW)return;const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const H=['ชั้น','เลขที่','เลขประจำตัว','ชื่อ',...VIEW.units.flatMap(u=>[`ภาค${u.term} หน่วย${u.unit} ก่อน`,`ภาค${u.term} หน่วย${u.unit} หลัง(ล่าสุด)`,`ภาค${u.term} หน่วย${u.unit} หลัง(สูงสุด)`])];
+ const L=[H.map(q).join(',')].concat(VIEW.stu.map(s=>[s.cls,s.no,s.sid,s.name,...VIEW.units.flatMap(u=>{const r=VIEW.val(s,u);return[r.fp,r.lp,r.bp]})].map(q).join(',')));
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+L.join('\n')],{type:'text/csv'}));a.download=`dashboard-${S.sub}-${S.cls}.csv`;a.click()}
+init();
+</script>
+</body>
+</html>
