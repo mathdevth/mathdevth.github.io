@@ -42,6 +42,8 @@ select,input{border:1px solid var(--line);background:var(--card);border-radius:1
 .modal .card{max-width:560px;width:100%;max-height:80vh;overflow:auto;margin:0}
 table.ls{border-collapse:collapse;width:100%;font-size:14px}table.ls td,table.ls th{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left}
 .err{color:#c0392b}
+td.nm button.rp{all:unset;cursor:pointer;color:inherit}td.nm button.rp:hover{color:var(--blue);text-decoration:underline}td.nm button.rp:focus-visible{outline:2px solid var(--blue)}
+@media print{body{background:#fff!important;color:#000}body>.wrap{display:none!important}#mod{position:static!important;background:none!important;padding:0!important;display:block!important}#mod .card{max-height:none!important;box-shadow:none;border:0;max-width:none}.noprint,#modX{display:none!important}}
 .back{display:inline-block;color:var(--blue);text-decoration:none;font-weight:600;font-size:14px;padding:4px 0}.back:hover{text-decoration:underline}
 .sites{display:flex;gap:4px;flex-wrap:wrap}.sites a{border:1px solid var(--line);border-radius:999px;padding:3px 11px;font-size:13px;color:var(--ink);text-decoration:none;background:var(--card)}.sites a:hover{border-color:var(--blue);color:var(--blue)}
 </style>
@@ -173,11 +175,11 @@ function render(){const D=CACHE[S.sub];if(!D)return;const isW=!!SUB[S.sub].work;
  const rows=stu.map(s=>{const vs=units.map((u,i)=>{const r=val(s,u);if(r.v!=null)colAgg[i].push(r.v);return r});const got=vs.filter(r=>r.v!=null);const avg=got.length?Math.round(got.reduce((a,r)=>a+r.v,0)/got.length):null;
   const tp=s.topics?Object.values(s.topics).filter(v=>v.right>=5).length:null;
   const dd=(dBy[s.uid||s.id]||[]).sort((a,b)=>ms(b.time)-ms(a.time));const dl=dd[0];
-  return`<tr><td class="nm">${S.cls==='*'?esc(s.cls)+' · ':''}${esc(s.no)} ${esc(s.name)}</td>${vs.map((r,i)=>`<td class="c ${S.mode==='gain'?(r.v==null?'v0':r.v>=20?'v4':r.v>=1?'v3':r.v===0?'v2':'v1'):'v'+lv(r.v)}" data-s="${esc(s.uid||s.id)}" data-u="${i}">${r.v==null?'–':(S.mode==='gain'&&r.v>0?'+':'')+r.v}${S.mode==='post'&&r.fp!=null?`<small>ก่อน ${r.fp}</small>`:''}</td>`).join('')}
+  return`<tr><td class="nm"><button type="button" class="rp" data-s="${esc(s.uid||s.id)}" title="ดูใบรายงานความก้าวหน้า">${S.cls==='*'?esc(s.cls)+' · ':''}${esc(s.no)} ${esc(s.name)} 📄</button></td>${vs.map((r,i)=>`<td class="c ${S.mode==='gain'?(r.v==null?'v0':r.v>=20?'v4':r.v>=1?'v3':r.v===0?'v2':'v1'):'v'+lv(r.v)}" data-s="${esc(s.uid||s.id)}" data-u="${i}">${r.v==null?'–':(S.mode==='gain'&&r.v>0?'+':'')+r.v}${S.mode==='post'&&r.fp!=null?`<small>ก่อน ${r.fp}</small>`:''}</td>`).join('')}
   <td class="c v${S.mode==='gain'?0:lv(avg)}">${avg??'–'}</td>${S.sub==='m1'||S.sub==='m3'?`<td>${tp??'–'}</td>`:''}${showDrill?`<td title="${dl?esc(dl.cname||dl.c):''}">${dl?`${dl.first}/${dl.goal} <small class="mute">${td(dl.time)}</small>`:'–'}</td>`:''}<td class="mute" style="font-size:12px">${td(s.lastSeen)}</td></tr>`}).join('');
  const foot=`<tfoot><tr><td class="nm">เฉลี่ยทั้งห้อง</td>${colAgg.map(a=>`<td>${a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):'–'}<small class="mute" style="display:block;font-weight:400">${a.length}/${stu.length} คน</small></td>`).join('')}<td></td>${S.sub==='m1'||S.sub==='m3'?'<td></td>':''}${showDrill?'<td></td>':''}<td></td></tr></tfoot>`;
  $('hm').innerHTML=units.length?`<table>${head}<tbody>${rows}</tbody>${foot}</table>`:`<p class="mute" style="padding:12px">ยังไม่มีผลแบบทดสอบในภาคเรียนนี้ (${stu.length} คนในห้อง)</p>`;
- $('hm').querySelectorAll('td.c[data-u]').forEach(td=>td.onclick=()=>hist(td.dataset.s,+td.dataset.u));
+ $('hm').querySelectorAll('td.c[data-u]').forEach(td=>td.onclick=()=>hist(td.dataset.s,+td.dataset.u));$('hm').querySelectorAll('button.rp').forEach(b=>b.onclick=()=>report(b.dataset.s));
  // KPI
  const allPost=[],allPre=[];let below=0;stu.forEach(s=>units.forEach(u=>{const r=val(s,u);if(r.lp!=null){allPost.push(r.lp);if(r.lp<50)below++}if(r.fp!=null)allPre.push(r.fp)}));
  const av=a=>a.length?Math.round(a.reduce((x,y)=>x+y,0)/a.length):'–';
@@ -196,6 +198,18 @@ function hist(sid,i){const s=VIEW.stu.find(x=>(x.uid||x.id)===sid),u=VIEW.units[
   b.disabled=true;try{await DB.del(SUB[S.sub].test+'/'+t.id);const D=CACHE[S.sub];D.tests=D.tests.filter(x=>x.id!==t.id);$('mod').hidden=true;render()}catch(e){b.disabled=false;alert('ลบไม่สำเร็จ ตรวจว่าเข้าสู่ระบบด้วยบัญชีครู')}});
  $('mod').hidden=false}
 
+function report(sid){const s=VIEW.stu.find(x=>(x.uid||x.id)===sid);if(!s)return;const rows=VIEW.units.map(u=>({u,r:VIEW.val(s,u)}));
+ const dd=(VIEW.dBy[s.uid||s.id]||[]).sort((a,b)=>ms(b.time)-ms(a.time));const got=rows.filter(x=>x.r.lp!=null);const avg=got.length?Math.round(got.reduce((a,x)=>a+x.r.lp,0)/got.length):null;
+ const low=rows.filter(x=>x.r.lp!=null&&x.r.lp<50),mid=rows.filter(x=>x.r.lp!=null&&x.r.lp>=50&&x.r.lp<70),none=rows.filter(x=>x.r.lp==null),good=rows.filter(x=>x.r.lp!=null&&x.r.lp>=70);
+ const up=rows.filter(x=>x.r.lp!=null&&x.r.fp!=null&&x.r.lp>x.r.fp);
+ const adv=[good.length?`ทำได้ดีใน ${good.map(x=>'หน่วย '+x.u.unit).join(', ')}`:'',up.length?`มีพัฒนาการจากก่อนเรียนใน ${up.length} หน่วย`:'',low.length?`ควรทบทวน ${low.map(x=>'หน่วย '+x.u.unit+' '+x.u.name).join(', ')} แล้วทำแบบทดสอบหลังเรียนใหม่`:'',mid.length?`ใกล้ผ่านเกณฑ์ใน ${mid.map(x=>'หน่วย '+x.u.unit).join(', ')} ฝึกเพิ่มอีกเล็กน้อย`:'',none.length?`ยังไม่ได้ทำแบบทดสอบหลังเรียน ${none.map(x=>'หน่วย '+x.u.unit).join(', ')}`:''].filter(Boolean);
+ $('modB').innerHTML=`<div class="rep"><p class="mute" style="margin:0">ใบรายงานความก้าวหน้า · ${esc(SUB[S.sub].n)} · ${new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'})}</p><h2 style="margin:4px 0">${esc(s.name)}</h2><p class="mute" style="margin:0 0 10px">ชั้น ${esc(s.cls)} เลขที่ ${esc(s.no)}${s.sid?' · เลขประจำตัว '+esc(s.sid):''} · เข้าเว็บล่าสุด ${td(s.lastSeen)}</p>
+ <div class="kpi" style="margin-bottom:10px"><div>เฉลี่ยหลังเรียน<b>${avg??'–'}${avg!=null?'%':''}</b></div><div>ทำหลังเรียนแล้ว<b>${got.length}/${rows.length}</b>หน่วย</div>${s.topics?`<div>หัวข้อที่ฝึกผ่าน<b>${Object.values(s.topics).filter(v=>v.right>=5).length}</b></div>`:''}${dd.length?`<div>ฝึกในคาบ<b>${dd.length}</b>ครั้ง · ผ่าน ${dd.filter(d=>d.pass||d.first>=d.goal).length}</div>`:''}</div>
+ <table class="ls"><tr><th>หน่วย</th><th>ก่อนเรียน</th><th>หลังเรียน (ล่าสุด)</th><th>สูงสุด</th><th>ผล</th></tr>${rows.map(({u,r})=>`<tr><td>ภาค ${u.term} หน่วย ${u.unit} ${esc(u.name)}</td><td>${r.fp??'–'}</td><td><b>${r.lp??'–'}</b></td><td>${r.bp??'–'}</td><td>${r.lp==null?'ยังไม่ทำ':r.lp>=70?'ดี':r.lp>=50?'ผ่าน':'ควรทบทวน'}</td></tr>`).join('')||'<tr><td colspan="5">ยังไม่มีผลแบบทดสอบ</td></tr>'}</table>
+ <h3 style="margin:14px 0 4px;font-size:16px">ข้อเสนอแนะ</h3><ul style="margin:0;padding-left:20px">${adv.map(a=>`<li>${esc(a)}</li>`).join('')||'<li>ยังไม่มีข้อมูลเพียงพอ</li>'}</ul>
+ <p class="mute" style="margin-top:14px;font-size:12px">ครูผู้สอน ครูคุ้ม (นายอชิตพล บุณรัตน์) · โรงเรียนวังโพรงพิทยาคม · ข้อมูลจากเว็บบทเรียน mathdevth.github.io</p></div>
+ <p class="noprint" style="margin-top:12px"><button class="pri" id="rpPrint">พิมพ์ / บันทึกเป็น PDF</button></p>`;
+ $('rpPrint').onclick=()=>window.print();$('mod').hidden=false}
 function csv(){if(!VIEW)return;const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
  const H=['ชั้น','เลขที่','เลขประจำตัว','ชื่อ',...VIEW.units.flatMap(u=>[`ภาค${u.term} หน่วย${u.unit} ก่อน`,`ภาค${u.term} หน่วย${u.unit} หลัง(ล่าสุด)`,`ภาค${u.term} หน่วย${u.unit} หลัง(สูงสุด)`])];
  const L=[H.map(q).join(',')].concat(VIEW.stu.map(s=>[s.cls,s.no,s.sid,s.name,...VIEW.units.flatMap(u=>{const r=VIEW.val(s,u);return[r.fp,r.lp,r.bp]})].map(q).join(',')));
