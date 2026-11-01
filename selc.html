@@ -144,9 +144,9 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 $('thm').onclick=()=>{const d=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=d?'light':'dark';try{localStorage.setItem('selc-theme',r.dataset.theme)}catch(e){}}})();
 const G={m1:{n:'ม.1',c:'var(--m1)',url:'math-m1/'},m3:{n:'ม.3',c:'var(--m3)',url:'math-m3/'},m5:{n:'ม.5',c:'var(--m5)',url:'math-m5/'}};
 const ACTS=[
-{g:'m1',id:'water',h:4,link:'#tb13',ch:'บท 1.3 ร้อยละในชีวิตจริง',t:'น้ำหายไปไหน?',d:'เทน้ำ 100 mL บนดิน หญ้า ทราย คอนกรีต วัดร้อยละที่ซึม อธิบายน้ำขังในโรงเรียน',tg:['ร้อยละ','เหตุและผล','สัดส่วน']},
-{g:'m1',id:'roof',h:4,link:'#td33',ch:'บท 3.3 กราฟเชิงเส้นในชีวิตจริง',t:'น้ำฝนจากหลังคา',d:'ฝน 1 mm บน 1 ตร.ม. = 1 ลิตร สร้างกราฟ y = พื้นที่ × x หาว่าฝนตกเท่าไรถังจึงเต็ม',tg:['ความสัมพันธ์เชิงเส้น','ระบบและแบบจำลอง']},
-{g:'m1',id:'heat',h:4,link:'#te44',ch:'บท 4.4 สถิติในชีวิตจริง',t:'ใต้ต้นไม้เย็นกว่าลานคอนกรีต?',d:'วัดอุณหภูมิ 2 จุดหลายวัน หาค่าเฉลี่ยและพิสัย แล้วเทียบใน CODAP',tg:['ค่าเฉลี่ย','ความเสถียรและการเปลี่ยนแปลง']},
+{g:'m1',id:'phbl1',h:12,link:'#tb11',pdf:'selc/phbl1-ใบงาน8บท.pdf',ch:'บทที่ 1 อัตราส่วน สัดส่วน ร้อยละ · หน่วย PhBL 8 บท',t:'ลานหน้าเสาธงน้ำขัง: เปลี่ยนพื้นกี่ %',d:'การตัดสินใจเดียวทั้งหน่วย: นับพื้น ทดลองถาด ขยายสู่ลานจริง แล้วเสนอผู้อำนวยการ มีกระดานคำถาม DQB',tg:['PhBL','อัตราส่วน','สัดส่วน','ร้อยละ']},
+{g:'m1',id:'roof',h:0,link:'#td33',ch:'บท 3.3 กราฟเชิงเส้นในชีวิตจริง',t:'น้ำฝนจากหลังคา',d:'ฝน 1 mm บน 1 ตร.ม. = 1 ลิตร สร้างกราฟ y = พื้นที่ × x หาว่าฝนตกเท่าไรถังจึงเต็ม',tg:['ความสัมพันธ์เชิงเส้น','ระบบและแบบจำลอง']},
+{g:'m1',id:'heat',h:0,link:'#te44',ch:'บท 4.4 สถิติในชีวิตจริง',t:'ใต้ต้นไม้เย็นกว่าลานคอนกรีต?',d:'วัดอุณหภูมิ 2 จุดหลายวัน หาค่าเฉลี่ยและพิสัย แล้วเทียบใน CODAP',tg:['ค่าเฉลี่ย','ความเสถียรและการเปลี่ยนแปลง']},
 {g:'m3',id:'led',h:4,link:'#e3',ch:'เทอม 2 บท 1.3 โจทย์ปัญหาระบบสมการ',t:'หลอด LED คุ้มเมื่อไร?',d:'สำรวจราคาและวัตต์จริง ใช้ค่าไฟจากบิล หาจุดคุ้มทุนจากจุดตัดของสองเส้น',tg:['ระบบสมการ','พลังงาน']},
 {g:'m3',id:'albedo',h:3,link:'#t3',ch:'บท 6.2 การนำแผนภาพกล่องไปใช้',t:'ทดลอง Ice–Albedo',d:'กระป๋องสีขาว/ดำตากแดด รวมผลทั้งห้อง เทียบด้วยแผนภาพกล่อง เชื่อมวงจรป้อนกลับ',tg:['แผนภาพกล่อง','ระบบ','Feedback loop']},
 {g:'m3',id:'rain',h:3,link:'#p3',ch:'เทอม 2 บท 4.3 ความน่าจะเป็น',t:'โอกาสฝนตกที่โรงเรียน',d:'บันทึกฝนตก/ไม่ตกทุกวัน ดูความถี่สัมพัทธ์สะสมว่าเริ่มนิ่งหรือยัง',tg:['ความน่าจะเป็น','รูปแบบ']},
@@ -160,16 +160,15 @@ const PLAN=[
 {m:'2569-10',d:'ต.ค.',t:'อบรมออนไลน์: 3-D Learning และ CER',s:'SEAMEO STEM-ED',ms:1},
 {m:'2569-11',d:'พ.ย.',t:'อบรมเชิงปฏิบัติการ On-site',s:'ศูนย์เครือข่าย ม.นเรศวร',ms:1},
 {m:'2569-11',d:'สัปดาห์ 1',t:'แบบวัดการอธิบายด้วยหลักฐาน (ก่อนเรียน) ทุกชั้น',s:'อยู่ในบทแรกของภาคเรียนในเว็บแต่ละชั้น · ไม่นับชั่วโมง',ms:1},
-{m:'2569-11',a:'water',d:'สัปดาห์ 2–3'},
+{m:'2569-11',a:'phbl1',d:'บท 1–5 · สัปดาห์ 2–4'},
+{m:'2569-12',a:'phbl1',d:'บท 6–8 · สัปดาห์ 1–2',part:1},
 {m:'2569-11',a:'led',d:'สัปดาห์ 2–3'},
 {m:'2569-11',a:'trash',d:'เริ่มชั่งขยะ สัปดาห์ 2'},
 {m:'2569-12',d:'ธ.ค.',t:'อบรมเชิงปฏิบัติการ On-site ครั้งที่ 2',s:'ศูนย์เครือข่าย ม.นเรศวร',ms:1},
 {m:'2569-12',a:'albedo',d:'สัปดาห์ 2'},
 {m:'2569-12',a:'energy',d:'สัปดาห์ 3'},
-{m:'2570-01',a:'roof',d:'สัปดาห์ 2–3'},
 {m:'2570-01',a:'solar',d:'สัปดาห์ 3'},
 {m:'2570-01',a:'rain',d:'เริ่มบันทึกฝน สัปดาห์ 1'},
-{m:'2570-02',a:'heat',d:'สัปดาห์ 1–2'},
 {m:'2570-02',d:'สัปดาห์ 3',t:'แบบวัดการอธิบายด้วยหลักฐาน (หลังเรียน) ทุกชั้น',s:'เทียบผลในแดชบอร์ด SELC แท็บก่อน/หลังเรียน',ms:1},
 {m:'2570-02',d:'ก.พ.',t:'สรุปผล ส่งหลักฐานเชิงประจักษ์ และรับการนิเทศติดตาม',s:'ครบ 30 ชั่วโมง',ms:1}];
 const TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
@@ -177,15 +176,15 @@ const TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.�
 let cur='all';
 function tabs(){$('tabs').innerHTML=[['all','ทั้งหมด','var(--g)'],...Object.entries(G).map(([k,v])=>[k,v.n,v.c])].map(([k,n,c])=>`<button type="button" class="tab" style="--c:${c}" data-k="${k}" aria-pressed="${k===cur}">${n}</button>`).join('');
  $('tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{cur=b.dataset.k;tabs();grid()})}
-function grid(){$('grid').innerHTML=ACTS.filter(a=>cur==='all'||a.g===cur).map(a=>{const g=G[a.g];return`<article class="act" style="--c:${g.c}"><span class="ch">${g.n} · ${esc(a.ch)}</span><h3>${esc(a.t)}</h3><p>${esc(a.d)}</p><div class="tg">${a.tg.map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="ft"><span class="hr">~${a.h} ชม.</span><span style="display:flex;gap:6px"><a class="pdf" href="selc/${a.g}-${a.id}.pdf" target="_blank" rel="noopener">📄 ใบงาน</a><a class="go" href="${g.url}${a.link}">เปิดบทเรียน →</a></span></div></article>`}).join('')}
+function grid(){$('grid').innerHTML=ACTS.filter(a=>cur==='all'||a.g===cur).map(a=>{const g=G[a.g];return`<article class="act" style="--c:${g.c}"><span class="ch">${g.n} · ${esc(a.ch)}</span><h3>${esc(a.t)}</h3><p>${esc(a.d)}</p><div class="tg">${a.tg.map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="ft"><span class="hr">${a.h?`~${a.h} ชม.`:'กิจกรรมเสริม'}</span><span style="display:flex;gap:6px"><a class="pdf" href="${a.pdf||`selc/${a.g}-${a.id}.pdf`}" target="_blank" rel="noopener">📄 ใบงาน</a><a class="go" href="${g.url}${a.link}">เปิดบทเรียน →</a></span></div></article>`}).join('')}
 /* ไทม์ไลน์ */
 const K='selc-done';let D={};try{D=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
 function tl(){const by={};PLAN.forEach(p=>(by[p.m]=by[p.m]||[]).push(p));const now=new Date(),nk=(now.getFullYear()+543)+'-'+String(now.getMonth()+1).padStart(2,'0');
  $('tl').innerHTML=Object.keys(by).sort().map(m=>{const [y,mo]=m.split('-');return`<div class="mo${m===nk?' now':''}"><h3>${TH[+mo-1]} ${y}</h3>${by[m].map(p=>{if(p.ms)return`<div class="ev ms" style="--c:var(--sel)"><span class="dt">${esc(p.d)}</span><div><b>${esc(p.t)}</b><small>${esc(p.s)}</small></div><span></span></div>`;
-  const a=ACTS.find(x=>x.id===p.a),g=G[a.g],dn=!!D[a.id];return`<div class="ev${dn?' done':''}" style="--c:${g.c}"><span class="dt">${g.n} · ${esc(p.d)}</span><div><b>${esc(a.t)}</b><small>${esc(a.ch)} · ${a.h} ชม. · <a href="${g.url}${a.link}">เปิด</a></small></div><label><input type="checkbox" data-id="${a.id}" ${dn?'checked':''}>สอนแล้ว</label></div>`}).join('')}</div>`}).join('');
+  const a=ACTS.find(x=>x.id===p.a),g=G[a.g],dn=!!D[a.id];return`<div class="ev${dn?' done':''}" style="--c:${g.c}"><span class="dt">${g.n} · ${esc(p.d)}</span><div><b>${esc(a.t)}</b><small>${esc(a.ch)} · ${a.h} ชม. · <a href="${g.url}${a.link}">เปิด</a></small></div>${p.part?'<span class="hr">(ต่อ)</span>':`<label><input type="checkbox" data-id="${a.id}" ${dn?'checked':''}>สอนแล้ว</label>`}</div>`}).join('')}</div>`}).join('');
  $('tl').querySelectorAll('input[data-id]').forEach(c=>c.onchange=()=>{if(c.checked)D[c.dataset.id]=new Date().toISOString().slice(0,10);else delete D[c.dataset.id];try{localStorage.setItem(K,JSON.stringify(D))}catch(e){}tl()});
  const plan=ACTS.reduce((s,a)=>s+a.h,0),done=ACTS.filter(a=>D[a.id]).reduce((s,a)=>s+a.h,0);$('hPlan').textContent=plan;$('hDone').textContent=done;const pc=Math.min(100,Math.round(done/30*100));$('hPct').textContent=pc+'% ของเป้า';$('hBar').style.width=pc+'%'}
-const INT={water:['วัฏจักรน้ำ การซึมผ่านของดิน ชนิดของดิน','น้ำท่วมขังในชุมชน ผังเมืองและพื้นที่สีเขียว'],
+const INT={phbl1:['วัฏจักรน้ำ การซึมผ่านของดิน ชนิดของดิน','น้ำท่วมขังในชุมชน ผังเมืองและพื้นที่สีเขียว'],water:['วัฏจักรน้ำ การซึมผ่านของดิน ชนิดของดิน','น้ำท่วมขังในชุมชน ผังเมืองและพื้นที่สีเขียว'],
 roof:['ปริมาณน้ำฝน การวัดฝน ฤดูกาล','การจัดการน้ำในชุมชน ภัยแล้ง การเก็บน้ำฝน'],
 heat:['การถ่ายโอนความร้อน การดูดกลืน/สะท้อนรังสี','เกาะความร้อนในเมือง การออกแบบพื้นที่ร่มเงา'],
 led:['พลังงานไฟฟ้า กำลังไฟฟ้า การผลิตไฟฟ้า','ค่าไฟของครัวเรือน นโยบายประหยัดพลังงาน'],

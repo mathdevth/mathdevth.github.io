@@ -48,7 +48,7 @@ details.rb summary{cursor:pointer;font-weight:600}.rb table td{font-size:13.5px}
 <script>
 const $=id=>document.getElementById(id);const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const SITES={m1:'ม.1',m3:'ม.3',m5:'ม.5'};
-const ACTS={m1:[['water','น้ำหายไปไหน?',['พื้นผิว','น้ำที่เท_mL','น้ำที่เหลือ_mL']],['roof','น้ำฝนจากหลังคา',['ฝน_mm']],['heat','ใต้ต้นไม้ vs ลานคอนกรีต',['วันที่','ใต้ต้นไม้','ลานคอนกรีต']]],
+const ACTS={m1:[['phbl1-L1','PhBL บท 1 · ปรากฏการณ์หลัก',[]],['phbl1-L2','PhBL บท 2 · พื้นแข็งกับพื้นเขียว',['บริเวณ', 'ช่องแข็ง', 'ช่องเขียว']],['phbl1-L3','PhBL บท 3 · เทียบพื้นสามแบบ',['พื้น', 'จำนวนช่อง']],['phbl1-L4','PhBL บท 4 · ทดลองถาด',['พื้น', 'น้ำที่เท_mL', 'น้ำที่เหลือ_mL']],['phbl1-L5','PhBL บท 5 · จากถาดสู่ลานจริง',['รายการ', 'ค่า']],['phbl1-L6','PhBL บท 6 · บอกเป็นร้อยละ',['สิ่งที่อยากบอก', 'ส่วน', 'ทั้งหมด']],['phbl1-L7','PhBL บท 7 · เปลี่ยนกี่เปอร์เซ็นต์ถึงพอ',['รายการ', 'ค่า']],['phbl1-L8','PhBL บท 8 · ข้อเสนอถึง ผอ.',[]],['water','(เดิม) น้ำหายไปไหน?',['พื้นผิว','น้ำที่เท_mL','น้ำที่เหลือ_mL']],['roof','น้ำฝนจากหลังคา',['ฝน_mm']],['heat','ใต้ต้นไม้ vs ลานคอนกรีต',['วันที่','ใต้ต้นไม้','ลานคอนกรีต']]],
  m3:[['led','หลอด LED คุ้มเมื่อไร?',['หลอด','ราคา','วัตต์']],['albedo','Ice–Albedo',['กลุ่ม','สีขาว','สีดำ']],['rain','โอกาสฝนตก',['วันที่','ฝนตก']]],
  m5:[['trash','ขยะลดลงแบบไหน?',['สัปดาห์','kg']],['energy','ลดไฟฟ้าเดือนละ p%',['รายการ','ค่า']],['solar','โซลาร์เซลล์คุ้มไหม?',['รายการ','ค่า']]]};
 const ALL=[].concat(...Object.entries(ACTS).map(([s,a])=>a.map(x=>({s,id:x[0],t:x[1],cols:x[2]}))));
@@ -86,7 +86,7 @@ async function vWork(W){const all=await selc();if(!ACTS[F.site])F.site='m1';cons
  <div class="kpi"><div><b>${rows.length}</b><small>ส่งงานแล้ว</small></div><div><b>${sc.length}</b><small>ให้คะแนนแล้ว</small></div><div><b>${sc.length?(sc.reduce((a,b)=>a+b,0)/sc.length).toFixed(2):'–'}</b><small>คะแนน CER เฉลี่ย (เต็ม 12)</small></div><div><b>${sc.length?Math.round(sc.filter(v=>v>=9).length/sc.length*100)+'%':'–'}</b><small>ได้ ≥ 9 (ระดับดี)</small></div></div>
  ${rubHTML()}
  <h3 style="margin:14px 0 6px">${SITES[F.site]} · ${esc(meta.t)} ${F.cls?'· ห้อง '+esc(F.cls):''}</h3>
- <div class="tw"><table><thead><tr><th>ห้อง/เลขที่</th><th>ชื่อ</th><th>คาดการณ์ก่อน</th><th>C</th><th>E</th><th>R</th><th>ข้อจำกัด</th><th>คะแนน C/E/R</th><th>รวม</th><th class="noprint">หมายเหตุครู</th></tr></thead><tbody>
+ <div class="tw"><table><thead><tr><th>ห้อง/เลขที่</th><th>ชื่อ</th><th>คาดการณ์ / วิธีคิด</th><th>C</th><th>E</th><th>R</th><th>ข้อจำกัด</th><th>คะแนน C/E/R</th><th>รวม</th><th class="noprint">หมายเหตุครู</th></tr></thead><tbody>
  ${rows.map(x=>`<tr data-id="${esc(x.id)}"><td>${esc(x.cls)} / ${esc(x.no)}</td><td>${esc(x.name)}</td><td class="ans">${esc(x.pre)}</td><td class="ans">${esc(x.C)}</td><td class="ans">${esc(x.E)}</td><td class="ans">${esc(x.R)}</td><td class="ans">${esc(x.lim)}</td>
  <td><div class="sc">${['C','E','R'].map(k=>`<select aria-label="คะแนน ${k}" data-k="${k}"><option value="">${k}</option>${[1,2,3,4].map(n=>`<option ${x.sc&&+x.sc[k]===n?'selected':''}>${n}</option>`).join('')}</select>`).join('')}</div></td><td class="tt">${tot(x)??'–'}</td>
  <td class="noprint"><input data-note value="${esc(x.tnote||'')}" placeholder="ข้อเสนอแนะ" style="min-width:140px"></td></tr>`).join('')||'<tr><td colspan="10" class="mut">ยังไม่มีนักเรียนส่งงานกิจกรรมนี้</td></tr>'}</tbody></table></div>`;
