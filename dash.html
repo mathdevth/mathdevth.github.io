@@ -86,10 +86,11 @@ table.ls{border-collapse:collapse;width:100%;font-size:14px}table.ls td,table.ls
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const SUB={
- m1:{n:'คณิต ม.1',stu:'students',test:'tests',drill:'drills'},
- m3:{n:'คณิต ม.3',stu:'m3students',test:'m3tests'},
- m5:{n:'คณิตพื้นฐาน ม.5',stu:'m5students',test:'m5tests',f:t=>!String(t.unitName||'').startsWith('เพิ่มเติม')},
- m5x:{n:'คณิตเพิ่มเติม ม.5',stu:'m5students',test:'m5tests',f:t=>String(t.unitName||'').startsWith('เพิ่มเติม')}};
+ m1:{n:'คณิต ม.1',stu:'students',test:'tests',drill:'drills',site:'m1'},
+ m3:{n:'คณิต ม.3',stu:'m3students',test:'m3tests',drill:'drills',site:'m3'},
+ m5:{n:'คณิตพื้นฐาน ม.5',stu:'m5students',test:'m5tests',drill:'drills',site:'m5',f:t=>!String(t.unitName||'').startsWith('เพิ่มเติม')},
+ m5x:{n:'คณิตเพิ่มเติม ม.5',stu:'m5students',test:'m5tests',drill:'drills',site:'m5x',f:t=>String(t.unitName||'').startsWith('เพิ่มเติม')},
+ is2:{n:'IS2 ม.2 (ความคืบหน้างาน)',stu:'is2students',work:'is2work'}};
 let DB=null,S={sub:'m1',cls:'',term:'2',mode:'post'},CACHE={};
 try{Object.assign(S,JSON.parse(localStorage.getItem('kkdash')||'{}'))}catch(e){}
 const keep=()=>{try{localStorage.setItem('kkdash',JSON.stringify(S))}catch(e){}};
@@ -126,7 +127,7 @@ function setup(){
  fetchData()}
 
 async function fetchData(){const c=SUB[S.sub];$('stat').textContent='กำลังโหลด…';
- try{if(!CACHE[S.sub]){const [stu,tests,drills]=await Promise.all([DB.q(c.stu),DB.q(c.test),c.drill?DB.q(c.drill).catch(()=>[]):[]]);CACHE[S.sub]={stu,tests:c.f?tests.filter(c.f):tests,drills}}}
+ try{if(!CACHE[S.sub]){if(c.work){const [stu,work]=await Promise.all([DB.q(c.stu),DB.q(c.work)]);CACHE[S.sub]={stu,work,tests:[],drills:[]}}else{const [stu,tests,drills]=await Promise.all([DB.q(c.stu),DB.q(c.test),c.drill?DB.q(c.drill).catch(()=>[]):[]]);CACHE[S.sub]={stu,tests:c.f?tests.filter(c.f):tests,drills:drills.filter(d=>(d.site||'m1')===c.site)}}}}
  catch(e){$('stat').innerHTML='<span class="err">โหลดข้อมูลไม่สำเร็จ ตรวจกฎ Firestore ว่าบัญชีครูอ่านได้</span>';return}
  const D=CACHE[S.sub];
  const cls=[...new Set(D.stu.map(s=>s.cls).filter(Boolean))].sort((a,b)=>String(a).localeCompare(b,'th',{numeric:true}));
@@ -142,7 +143,17 @@ const td=v=>{const t=ms(v);return t?new Date(t).toLocaleString('th-TH',{day:'num
 const pct=t=>t.total?Math.round(t.score/t.total*100):0;
 const lv=v=>v==null?0:v>=85?4:v>=70?3:v>=50?2:1;
 let VIEW=null;
-function render(){const D=CACHE[S.sub];if(!D)return;
+function renderIS2(D){const stu=D.stu.filter(s=>S.cls==='*'||s.cls===S.cls).sort((a,b)=>String(a.cls).localeCompare(b.cls,'th',{numeric:true})||(+a.no||0)-(+b.no||0));const W=Object.fromEntries(D.work.map(w=>[w.uid||w.id,w]));
+ const fr=v=>{const m=String(v||'').match(/(\d+)\/(\d+)/);return m&&+m[2]?Math.round(+m[1]/+m[2]*100):null};
+ const cell=v=>{const p=fr(v);return`<td class="c ${p==null?'v0':'v'+lv(p)}">${v||'–'}</td>`};
+ const rows=stu.map(s=>{const w=W[s.id]||W[s.uid];return`<tr><td class="nm">${S.cls==='*'?esc(s.cls)+' · ':''}${esc(s.no)} ${esc(s.name)}</td>${cell(w&&w.u1)}${cell(w&&w.u2)}${cell(w&&w.u3)}<td>${w?(w.words||0).toLocaleString():'–'}</td><td>${w?w.refs||0:'–'}</td><td style="text-align:left;white-space:normal;max-width:260px">${w&&w.title?esc(w.title):'<span class="mute">ยังไม่ตั้งชื่อเรื่อง</span>'}</td><td class="mute" style="font-size:12px">${w?td(w.updated):'ยังไม่เริ่ม'}</td></tr>`}).join('');
+ const started=stu.filter(s=>W[s.id]||W[s.uid]).length,wds=stu.map(s=>(W[s.id]||W[s.uid]||{}).words||0),act=stu.filter(s=>{const w=W[s.id]||W[s.uid];return w&&ms(w.updated)>Date.now()-7*864e5}).length;
+ $('kpi').innerHTML=`<div>นักเรียนในห้อง<b>${stu.length}</b></div><div>เริ่มทำงานในเว็บแล้ว<b>${started}</b></div><div>บันทึกงานใน 7 วัน<b>${act}</b></div><div>คำเฉลี่ยในรายงาน<b>${stu.length?Math.round(wds.reduce((a,b)=>a+b,0)/stu.length).toLocaleString():'–'}</b>เป้าหมาย 2,500 คำ</div>`;
+ $('hm').innerHTML=stu.length?`<table><thead><tr><th class="nm">เลขที่ · ชื่อ</th><th>ห้อง 01<br><span class="mute" style="font-weight:400">โลกของรายงาน</span></th><th>ห้อง 02<br><span class="mute" style="font-weight:400">เรียงร้อยถ้อยคำ</span></th><th>ห้อง 03<br><span class="mute" style="font-weight:400">เล่าสู่กันฟัง</span></th><th>จำนวนคำ</th><th>อ้างอิง</th><th>ชื่อเรื่อง</th><th>บันทึกล่าสุด</th></tr></thead><tbody>${rows}</tbody></table>`:'<p class="mute" style="padding:12px">ยังไม่มีบัญชีนักเรียน IS2</p>';
+ const behind=stu.filter(s=>{const w=W[s.id]||W[s.uid];return !w||ms(w.updated)<Date.now()-14*864e5});
+ $('help').innerHTML=`<div><b>ยังไม่เริ่มหรือไม่ได้บันทึกเกิน 14 วัน</b><div class="mute" style="font-size:13px">${behind.length} คน</div>${behind.length?`<ul>${behind.map(s=>`<li>${esc(s.no)} ${esc(s.name)}</li>`).join('')}</ul>`:''}</div>`;
+ $('stat').textContent=`IS2 ม.2 · ${S.cls==='*'?'ทุกห้อง':'ห้อง '+S.cls} · ตัวเลขในช่องคือจำนวนกิจกรรมที่ทำเสร็จในแต่ละห้องของเว็บ IS2`;VIEW=null}
+function render(){const D=CACHE[S.sub];if(!D)return;const isW=!!SUB[S.sub].work;$('sTerm').parentElement.hidden=isW;$('sMode').parentElement.hidden=isW;if(isW)return renderIS2(D);
  const stu=D.stu.filter(s=>S.cls==='*'||s.cls===S.cls).sort((a,b)=>String(a.cls).localeCompare(b.cls,'th',{numeric:true})||(+a.no||0)-(+b.no||0)||String(a.name).localeCompare(b.name,'th'));
  const ids=new Set(stu.map(s=>s.uid||s.id)),sids=new Set(stu.map(s=>s.sid));
  const T=D.tests.filter(t=>t.type!=='onet'&&(S.term==='*'||String(t.term)===S.term)&&(ids.has(t.uid)||sids.has(t.sid)));
