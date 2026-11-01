@@ -101,7 +101,7 @@ async function init(){
  await load(v+'firebase-app-compat.js');await load(v+'firebase-auth-compat.js');await load(v+'firebase-firestore-compat.js');
  firebase.initializeApp(cfg);const fs=firebase.firestore();
  DB={auth:firebase.auth(),get:p=>fs.doc(p).get().then(d=>d.exists?{id:d.id,...d.data()}:null),
-  q:(c,w)=>{let r=fs.collection(c);(w||[]).forEach(x=>r=r.where(...x));return r.get().then(s=>s.docs.map(d=>({id:d.id,...d.data()})))}};
+  del:p=>fs.doc(p).delete(),q:(c,w)=>{let r=fs.collection(c);(w||[]).forEach(x=>r=r.where(...x));return r.get().then(s=>s.docs.map(d=>({id:d.id,...d.data()})))}};
  start()}
 function start(){
  $('lgF').onsubmit=async e=>{e.preventDefault();$('lgM').textContent='';try{await DB.auth.signInWithEmailAndPassword($('lgE').value.trim(),$('lgP').value)}catch(err){$('lgM').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
@@ -178,7 +178,9 @@ function render(){const D=CACHE[S.sub];if(!D)return;
 
 function hist(sid,i){const s=VIEW.stu.find(x=>(x.uid||x.id)===sid),u=VIEW.units[i],r=VIEW.val(s,u);
  $('modB').innerHTML=`<h2>${esc(s.name)} · ชั้น ${esc(s.cls)} เลขที่ ${esc(s.no)}</h2><p class="mute">ภาค ${u.term} หน่วย ${u.unit} ${esc(u.name)}</p>
- ${r.a.length?`<table class="ls"><tr><th>เวลา</th><th>แบบทดสอบ</th><th>คะแนน</th><th>%</th></tr>${r.a.map(t=>`<tr><td>${td(t.time)}</td><td>${t.type==='pre'?'ก่อนเรียน':'หลังเรียน'}</td><td>${t.score}/${t.total}</td><td>${pct(t)}</td></tr>`).join('')}</table>`:'<p>ยังไม่ได้ทำแบบทดสอบหน่วยนี้</p>'}`;
+ ${r.a.length?`<table class="ls"><tr><th>เวลา</th><th>แบบทดสอบ</th><th>คะแนน</th><th>%</th><th></th></tr>${r.a.map(t=>`<tr><td>${td(t.time)}</td><td>${t.type==='pre'?'ก่อนเรียน':'หลังเรียน'}</td><td>${t.score}/${t.total}</td><td>${pct(t)}</td><td><button class="dl" data-id="${esc(t.id)}" style="border-color:#dc2626;color:#dc2626;padding:2px 10px">🗑 ลบ</button></td></tr>`).join('')}</table><p class="mute" style="font-size:13px">ลบเฉพาะครั้งที่ทำผิดบทหรือทดลองส่ง ลบแล้วกู้คืนไม่ได้</p>`:'<p>ยังไม่ได้ทำแบบทดสอบหน่วยนี้</p>'}`;
+ $('modB').querySelectorAll('.dl').forEach(b=>b.onclick=async()=>{const t=r.a.find(x=>x.id===b.dataset.id);if(!t||!confirm(`ลบคะแนน${t.type==='pre'?'ก่อนเรียน':'หลังเรียน'} ของ ${s.name}\n${td(t.time)} · ${t.score}/${t.total}\n\nลบแล้วกู้คืนไม่ได้ ยืนยันหรือไม่`))return;
+  b.disabled=true;try{await DB.del(SUB[S.sub].test+'/'+t.id);const D=CACHE[S.sub];D.tests=D.tests.filter(x=>x.id!==t.id);$('mod').hidden=true;render()}catch(e){b.disabled=false;alert('ลบไม่สำเร็จ ตรวจว่าเข้าสู่ระบบด้วยบัญชีครู')}});
  $('mod').hidden=false}
 
 function csv(){if(!VIEW)return;const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
