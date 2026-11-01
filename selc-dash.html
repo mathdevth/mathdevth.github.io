@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>แดชบอร์ด SELC</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230f766e'/><text x='50' y='68' font-size='54' text-anchor='middle'>📊</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f7f5;--card:#fff;--ink:#12302b;--mut:#4f6b66;--line:#d5e4df;--g:#0f766e;--soft:#e4f3ee;--warn:#b45309;--m1:#2f7de1;--m3:#e0558f;--m5:#7c5ce0}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1513;--card:#13211e;--ink:#e6f4f0;--mut:#9dbbb4;--line:#24403a;--soft:#173430;--warn:#fbbf24}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Prompt,system-ui,sans-serif;line-height:1.55;font-size:15.5px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+header{background:var(--card);border-bottom:1px solid var(--line)}header .wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;min-height:58px}
+header b{font-size:18px}.sp{flex:1}a{color:inherit}
+button,select,input,textarea{font:inherit;color:inherit}
+.btn{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:7px 12px;min-height:42px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn.p{background:var(--g);border-color:var(--g);color:#fff;font-weight:600}
+select,input,textarea{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 9px;min-height:42px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 10px}
+.tab{border:2px solid var(--line);background:var(--card);border-radius:14px;padding:7px 14px;min-height:44px;cursor:pointer;font-weight:600}
+.tab[aria-pressed="true"]{background:var(--g);border-color:var(--g);color:#fff}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:10px 0}
+.kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}@media(max-width:760px){.kpi{grid-template-columns:1fr 1fr}}
+.kpi div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px}.kpi b{display:block;font-size:24px}.kpi small{color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{position:sticky;top:0;background:var(--card)}
+.tw{overflow:auto;max-height:70vh;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.mut{color:var(--mut)}.err{color:#d94f3d}
+.sc{display:flex;gap:4px}.sc select{min-height:36px;padding:3px 6px}
+.ans{max-width:260px;white-space:pre-wrap}
+.pill{display:inline-block;border-radius:999px;padding:0 8px;font-size:12px;font-weight:700;background:var(--soft)}
+.ok{color:#17a673;font-weight:700}
+details.rb summary{cursor:pointer;font-weight:600}.rb table td{font-size:13.5px}
+#login{max-width:380px;margin:40px auto}#login input{width:100%;margin:6px 0}
+@media print{header,.tabs,.bar,.noprint,details.rb{display:none!important}body{background:#fff;color:#000}.tw{max-height:none;overflow:visible;border:0}.card{border:0}th{position:static}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><b>📊 แดชบอร์ด SELC</b><span class="sp"></span><a class="btn" href="selc.html">🌏 เว็บ SELC</a><a class="btn" href="dash.html">แดชบอร์ดหลัก</a><a class="btn" href="./">หน้าหลัก</a><span id="acct" class="mut"></span></div></header>
+<main class="wrap">
+<form id="login" class="card" hidden><h2 style="margin-top:0">เข้าสู่ระบบครู</h2><input id="lgE" type="email" placeholder="อีเมล" autocomplete="username" required><input id="lgP" type="password" placeholder="รหัสผ่าน" autocomplete="current-password" required><button class="btn p" style="width:100%">เข้าสู่ระบบ</button><p id="lgM" class="err"></p></form>
+<div id="app" hidden>
+<div class="tabs" role="group" aria-label="เมนู"><button class="tab" data-v="work" aria-pressed="true">งานนักเรียน + ให้คะแนน CER</button><button class="tab" data-v="pp" aria-pressed="false">ก่อน/หลังเรียน</button><button class="tab" data-v="hrs" aria-pressed="false">บันทึกชั่วโมงสอน</button></div>
+<div id="view"></div>
+</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const SITES={m1:'ม.1',m3:'ม.3',m5:'ม.5'};
+const ACTS={m1:[['water','น้ำหายไปไหน?',['พื้นผิว','น้ำที่เท_mL','น้ำที่เหลือ_mL']],['roof','น้ำฝนจากหลังคา',['ฝน_mm']],['heat','ใต้ต้นไม้ vs ลานคอนกรีต',['วันที่','ใต้ต้นไม้','ลานคอนกรีต']]],
+ m3:[['led','หลอด LED คุ้มเมื่อไร?',['หลอด','ราคา','วัตต์']],['albedo','Ice–Albedo',['กลุ่ม','สีขาว','สีดำ']],['rain','โอกาสฝนตก',['วันที่','ฝนตก']]],
+ m5:[['trash','ขยะลดลงแบบไหน?',['สัปดาห์','kg']],['energy','ลดไฟฟ้าเดือนละ p%',['รายการ','ค่า']],['solar','โซลาร์เซลล์คุ้มไหม?',['รายการ','ค่า']]]};
+const ALL=[].concat(...Object.entries(ACTS).map(([s,a])=>a.map(x=>({s,id:x[0],t:x[1],cols:x[2]}))));
+const RUB={C:['ไม่มี/ไม่ตรงคำถาม','ตอบบางส่วน','ตอบตรงแต่ยังไม่ชัด','ตอบตรง ชัดเจน ครบ'],E:['ไม่มีหลักฐาน','อ้างข้อมูลแต่ไม่มีตัวเลข','มีตัวเลข 1 จุด หรือบางจุดไม่เกี่ยว','ตัวเลขถูกต้อง เกี่ยวข้อง ≥ 2 จุด'],R:['ไม่มีเหตุผล','ใช้ความรู้สึก/ทวน E','เชื่อม E→C ด้วยหลักคณิต','เชื่อม E→C ชัด + บอกข้อจำกัดได้']};
+let DB=null,V='work',F={site:'m1',act:'water',cls:''},CACHE={};
+try{Object.assign(F,JSON.parse(localStorage.getItem('selcdash')||'{}'))}catch(e){}
+const keep=()=>{try{localStorage.setItem('selcdash',JSON.stringify(F))}catch(e){}};
+function load(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+async function init(){if(window.__FAKEDB){DB=window.__FAKEDB;return start()}
+ let cfg=null;for(const u of ['config.json','https://mathdevth.github.io/math-m1/config.json']){try{const j=await fetch(u,{cache:'no-store'}).then(r=>r.ok?r.json():null);if(j&&j.firebase&&j.firebase.apiKey){cfg=j.firebase;break}}catch(e){}}
+ if(!cfg){$('acct').innerHTML='<span class="err">ไม่พบค่า Firebase</span>';return}
+ const v='https://cdn.jsdelivr.net/npm/firebase@10.12.2/';await load(v+'firebase-app-compat.js');await load(v+'firebase-auth-compat.js');await load(v+'firebase-firestore-compat.js');
+ firebase.initializeApp(cfg);const fs=firebase.firestore();
+ DB={auth:firebase.auth(),get:p=>fs.doc(p).get().then(d=>d.exists?{id:d.id,...d.data()}:null),set:(p,d)=>fs.doc(p).set(d,{merge:true}),add:(c,d)=>fs.collection(c).add(d),del:p=>fs.doc(p).delete(),
+  q:(c,w)=>{let r=fs.collection(c);(w||[]).forEach(x=>r=r.where(...x));return r.get().then(s=>s.docs.map(d=>({id:d.id,...d.data()})))}};start()}
+function start(){$('lgF')&&0;$('login').onsubmit=async e=>{e.preventDefault();$('lgM').textContent='';try{await DB.auth.signInWithEmailAndPassword($('lgE').value.trim(),$('lgP').value)}catch(err){$('lgM').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
+ DB.auth.onAuthStateChanged(async u=>{$('app').hidden=true;if(!u){$('login').hidden=false;$('acct').innerHTML='';return}
+  const t=await DB.get('teachers/'+u.uid).catch(()=>null);$('acct').innerHTML=`${esc(u.email||'')} <button class="btn" id="out">ออก</button>`;$('out').onclick=()=>DB.auth.signOut();
+  if(!t){$('login').hidden=false;$('lgM').textContent='บัญชีนี้ไม่ใช่บัญชีครู';return}$('login').hidden=true;$('app').hidden=false;
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{V=b.dataset.v;document.querySelectorAll('.tab').forEach(x=>x.setAttribute('aria-pressed',x===b));render()});render()})}
+async function selc(force){if(!CACHE.selc||force){try{CACHE.selc=await DB.q('selc')}catch(e){CACHE.selc=null;throw e}}return CACHE.selc}
+const tot=x=>x.sc&&x.sc.C&&x.sc.E&&x.sc.R?(+x.sc.C)+(+x.sc.E)+(+x.sc.R):null;
+const sortS=(a,b)=>String(a.cls).localeCompare(String(b.cls),'th')||(+a.no||0)-(+b.no||0);
+function dlCSV(name,head,rows){const q=s=>/[",\n]/.test(String(s??''))?'"'+String(s).replace(/"/g,'""')+'"':String(s??'');const t='﻿'+[head,...rows].map(r=>r.map(q).join(',')).join('\n');const b=new Blob([t],{type:'text/csv;charset=utf-8'}),u=URL.createObjectURL(b),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1500)}
+const rubHTML=()=>`<details class="rb card"><summary>รูบริก CER 4 ระดับ (1–4 คะแนนต่อส่วน รวม 12)</summary><table><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th></tr>${Object.entries(RUB).map(([k,v])=>`<tr><th>${k}</th>${v.map(x=>`<td>${esc(x)}</td>`).join('')}</tr>`).join('')}</table></details>`;
+async function render(){const W=$('view');W.innerHTML='<p class="mut">กำลังโหลด…</p>';try{if(V==='work')await vWork(W);else if(V==='pp')await vPP(W);else await vHrs(W)}catch(e){W.innerHTML=`<p class="err">โหลดไม่ได้ — ตรวจว่า Publish firestore.rules (selc / selclog) แล้ว · ${esc(e.message||e)}</p>`}}
+/* ---------- งานนักเรียน ---------- */
+async function vWork(W){const all=await selc();if(!ACTS[F.site])F.site='m1';const list=ACTS[F.site];if(!list.some(a=>a[0]===F.act))F.act=list[0][0];
+ const R=all.filter(x=>x.site===F.site&&x.act===F.act);const classes=[...new Set(R.map(x=>x.cls).filter(Boolean))].sort();if(F.cls&&!classes.includes(F.cls))F.cls='';
+ const rows=R.filter(x=>!F.cls||x.cls===F.cls).sort(sortS);const sc=rows.map(tot).filter(v=>v!=null);const meta=ALL.find(a=>a.s===F.site&&a.id===F.act);
+ W.innerHTML=`<div class="bar"><select id="fS" aria-label="ชั้น">${Object.entries(SITES).map(([k,v])=>`<option value="${k}" ${k===F.site?'selected':''}>${v}</option>`).join('')}</select>
+ <select id="fA" aria-label="กิจกรรม">${list.map(a=>`<option value="${a[0]}" ${a[0]===F.act?'selected':''}>${esc(a[1])}</option>`).join('')}</select>
+ <select id="fC" aria-label="ห้อง"><option value="">ทุกห้อง</option>${classes.map(c=>`<option ${c===F.cls?'selected':''}>${esc(c)}</option>`).join('')}</select>
+ <button class="btn" id="rf">↻ โหลดใหม่</button><span class="sp"></span><button class="btn" id="exS">⬇ คะแนน CER (Excel)</button><button class="btn" id="exD">⬇ รวมข้อมูลทั้งห้อง → CODAP</button><button class="btn" id="pr">🖨 พิมพ์</button></div>
+ <div class="kpi"><div><b>${rows.length}</b><small>ส่งงานแล้ว</small></div><div><b>${sc.length}</b><small>ให้คะแนนแล้ว</small></div><div><b>${sc.length?(sc.reduce((a,b)=>a+b,0)/sc.length).toFixed(2):'–'}</b><small>คะแนน CER เฉลี่ย (เต็ม 12)</small></div><div><b>${sc.length?Math.round(sc.filter(v=>v>=9).length/sc.length*100)+'%':'–'}</b><small>ได้ ≥ 9 (ระดับดี)</small></div></div>
+ ${rubHTML()}
+ <h3 style="margin:14px 0 6px">${SITES[F.site]} · ${esc(meta.t)} ${F.cls?'· ห้อง '+esc(F.cls):''}</h3>
+ <div class="tw"><table><thead><tr><th>ห้อง/เลขที่</th><th>ชื่อ</th><th>คาดการณ์ก่อน</th><th>C</th><th>E</th><th>R</th><th>ข้อจำกัด</th><th>คะแนน C/E/R</th><th>รวม</th><th class="noprint">หมายเหตุครู</th></tr></thead><tbody>
+ ${rows.map(x=>`<tr data-id="${esc(x.id)}"><td>${esc(x.cls)} / ${esc(x.no)}</td><td>${esc(x.name)}</td><td class="ans">${esc(x.pre)}</td><td class="ans">${esc(x.C)}</td><td class="ans">${esc(x.E)}</td><td class="ans">${esc(x.R)}</td><td class="ans">${esc(x.lim)}</td>
+ <td><div class="sc">${['C','E','R'].map(k=>`<select aria-label="คะแนน ${k}" data-k="${k}"><option value="">${k}</option>${[1,2,3,4].map(n=>`<option ${x.sc&&+x.sc[k]===n?'selected':''}>${n}</option>`).join('')}</select>`).join('')}</div></td><td class="tt">${tot(x)??'–'}</td>
+ <td class="noprint"><input data-note value="${esc(x.tnote||'')}" placeholder="ข้อเสนอแนะ" style="min-width:140px"></td></tr>`).join('')||'<tr><td colspan="10" class="mut">ยังไม่มีนักเรียนส่งงานกิจกรรมนี้</td></tr>'}</tbody></table></div>`;
+ $('fS').onchange=e=>{F.site=e.target.value;F.act=ACTS[F.site][0][0];F.cls='';keep();vWork(W)};$('fA').onchange=e=>{F.act=e.target.value;keep();vWork(W)};$('fC').onchange=e=>{F.cls=e.target.value;keep();vWork(W)};
+ $('rf').onclick=async()=>{await selc(true);vWork(W)};$('pr').onclick=()=>print();
+ $('exS').onclick=()=>dlCSV(`selc-${F.site}-${F.act}-cer.csv`,['ห้อง','เลขที่','ชื่อ','คาดการณ์ก่อน','C','E','R','ข้อจำกัด','คะแนนC','คะแนนE','คะแนนR','รวม','หมายเหตุครู'],rows.map(x=>[x.cls,x.no,x.name,x.pre,x.C,x.E,x.R,x.lim,x.sc&&x.sc.C,x.sc&&x.sc.E,x.sc&&x.sc.R,tot(x)??'',x.tnote]));
+ $('exD').onclick=()=>{const out=[];rows.forEach(x=>{let d=[];try{d=JSON.parse(x.rows||'[]')}catch(e){}d.filter(r=>r.some(v=>String(v).trim()!=='')).forEach(r=>out.push([x.cls,x.no,x.name,...meta.cols.map((c,i)=>r[i]??''),...(F.act==='roof'?[x.ex]:[])]))});
+  if(!out.length){alert('ยังไม่มีข้อมูลตารางจากนักเรียน');return}dlCSV(`selc-${F.site}-${F.act}-ทั้งห้อง.csv`,['ห้อง','เลขที่','ชื่อ',...meta.cols,...(F.act==='roof'?['พื้นที่หลังคา_ตรม']:[])],out)};
+ W.querySelectorAll('tr[data-id]').forEach(tr=>{const id=tr.dataset.id,x=rows.find(r=>r.id===id);
+  tr.querySelectorAll('select[data-k]').forEach(s=>s.onchange=async()=>{x.sc=Object.assign({},x.sc||{},{[s.dataset.k]:s.value?+s.value:null});tr.querySelector('.tt').textContent='…';
+   try{await DB.set('selc/'+id,{sc:x.sc,scoredAt:new Date().toISOString()});tr.querySelector('.tt').innerHTML=(tot(x)??'–')+' <span class="ok">✓</span>'}catch(e){tr.querySelector('.tt').innerHTML='<span class="err">บันทึกไม่ได้</span>'}});
+  const n=tr.querySelector('[data-note]');n.onchange=async()=>{x.tnote=n.value;try{await DB.set('selc/'+id,{tnote:n.value});n.style.borderColor='#17a673'}catch(e){n.style.borderColor='#d94f3d'}}})}
+/* ---------- ก่อน/หลังเรียน ---------- */
+async function vPP(W){const all=await selc();if(!ACTS[F.site])F.site='m1';const R=all.filter(x=>x.site===F.site&&(x.act==='cerpre'||x.act==='cerpost'));const by={};
+ R.forEach(x=>{const o=by[x.uid]=by[x.uid]||{cls:x.cls,no:x.no,name:x.name};o[x.act==='cerpre'?'pre':'post']=x});
+ const classes=[...new Set(Object.values(by).map(x=>x.cls).filter(Boolean))].sort();if(F.cls&&!classes.includes(F.cls))F.cls='';
+ const L=Object.values(by).filter(x=>!F.cls||x.cls===F.cls).sort(sortS);const pair=L.filter(x=>x.pre&&x.post&&tot(x.pre)!=null&&tot(x.post)!=null);
+ const m=a=>a.length?(a.reduce((s,v)=>s+v,0)/a.length):null,mp=m(pair.map(x=>tot(x.pre))),mq=m(pair.map(x=>tot(x.post))),up=pair.filter(x=>tot(x.post)>tot(x.pre)).length;
+ const cell=(x,k)=>x?`<td class="ans">${esc(x.C)}<br><span class="mut">E:</span> ${esc(x.E)}<br><span class="mut">R:</span> ${esc(x.R)}</td><td><div class="sc" data-id="${esc(x.id)}">${['C','E','R'].map(c=>`<select aria-label="คะแนน ${c}" data-k="${c}"><option value="">${c}</option>${[1,2,3,4].map(n=>`<option ${x.sc&&+x.sc[c]===n?'selected':''}>${n}</option>`).join('')}</select>`).join('')}</div><b class="tt">${tot(x)??'–'}</b></td>`:'<td class="mut">ยังไม่ส่ง</td><td></td>';
+ W.innerHTML=`<div class="bar"><select id="fS">${Object.entries(SITES).map(([k,v])=>`<option value="${k}" ${k===F.site?'selected':''}>${v}</option>`).join('')}</select><select id="fC"><option value="">ทุกห้อง</option>${classes.map(c=>`<option ${c===F.cls?'selected':''}>${esc(c)}</option>`).join('')}</select><button class="btn" id="rf">↻ โหลดใหม่</button><span class="sp"></span><button class="btn" id="ex">⬇ Excel</button><button class="btn" id="pr">🖨 พิมพ์</button></div>
+ <div class="kpi"><div><b>${pair.length}</b><small>ทำครบทั้งก่อนและหลัง + ให้คะแนนแล้ว</small></div><div><b>${mp!=null?mp.toFixed(2):'–'}</b><small>เฉลี่ยก่อนเรียน (เต็ม 12)</small></div><div><b>${mq!=null?mq.toFixed(2):'–'}</b><small>เฉลี่ยหลังเรียน (เต็ม 12)</small></div><div><b>${pair.length?Math.round(up/pair.length*100)+'%':'–'}</b><small>คะแนนเพิ่มขึ้น (${up} คน)</small></div></div>
+ ${mp!=null?`<div class="card"><svg viewBox="0 0 560 120" role="img" aria-label="เทียบคะแนนเฉลี่ยก่อนและหลังเรียน" style="width:100%;max-width:640px">${[['ก่อนเรียน',mp,'#f2a33a',20],['หลังเรียน',mq,'#0f766e',70]].map(([n,v,c,y])=>`<text x="0" y="${y+20}" font-size="14" fill="currentColor">${n}</text><rect x="90" y="${y}" width="${v/12*430}" height="30" rx="6" fill="${c}"/><text x="${96+v/12*430}" y="${y+20}" font-size="14" fill="currentColor">${v.toFixed(2)}</text>`).join('')}</svg></div>`:''}
+ ${rubHTML()}<p class="mut">แบบวัดชุดเดียวกันทั้งก่อนและหลัง (อุณหภูมิกับยอดขายน้ำดื่ม) ให้คะแนนด้วยรูบริกเดียวกัน</p>
+ <div class="tw"><table><thead><tr><th>ห้อง/เลขที่</th><th>ชื่อ</th><th>ก่อนเรียน (C/E/R)</th><th>คะแนน</th><th>หลังเรียน (C/E/R)</th><th>คะแนน</th><th>ผลต่าง</th></tr></thead><tbody>
+ ${L.map(x=>`<tr><td>${esc(x.cls)} / ${esc(x.no)}</td><td>${esc(x.name)}</td>${cell(x.pre)}${cell(x.post)}<td>${x.pre&&x.post&&tot(x.pre)!=null&&tot(x.post)!=null?((tot(x.post)-tot(x.pre)>0?'+':'')+(tot(x.post)-tot(x.pre))):'–'}</td></tr>`).join('')||'<tr><td colspan="7" class="mut">ยังไม่มีข้อมูล</td></tr>'}</tbody></table></div>`;
+ $('fS').onchange=e=>{F.site=e.target.value;F.cls='';keep();vPP(W)};$('fC').onchange=e=>{F.cls=e.target.value;keep();vPP(W)};$('rf').onclick=async()=>{await selc(true);vPP(W)};$('pr').onclick=()=>print();
+ $('ex').onclick=()=>dlCSV(`selc-${F.site}-ก่อนหลัง.csv`,['ห้อง','เลขที่','ชื่อ','ก่อน_C','ก่อน_E','ก่อน_R','ก่อน_รวม','หลัง_C','หลัง_E','หลัง_R','หลัง_รวม','ผลต่าง'],L.map(x=>{const a=x.pre||{},b=x.post||{},ta=x.pre?tot(x.pre):null,tb=x.post?tot(x.post):null;return[x.cls,x.no,x.name,a.sc&&a.sc.C,a.sc&&a.sc.E,a.sc&&a.sc.R,ta??'',b.sc&&b.sc.C,b.sc&&b.sc.E,b.sc&&b.sc.R,tb??'',ta!=null&&tb!=null?tb-ta:'']}));
+ W.querySelectorAll('.sc[data-id]').forEach(box=>{const id=box.dataset.id,x=R.find(r=>r.id===id);box.querySelectorAll('select').forEach(s=>s.onchange=async()=>{x.sc=Object.assign({},x.sc||{},{[s.dataset.k]:s.value?+s.value:null});try{await DB.set('selc/'+id,{sc:x.sc,scoredAt:new Date().toISOString()});vPP(W)}catch(e){alert('บันทึกไม่ได้')}})})}
+/* ---------- ชั่วโมงสอน ---------- */
+async function vHrs(W){let L=[];L=await DB.q('selclog');L.sort((a,b)=>String(a.date).localeCompare(String(b.date)));const sum=L.reduce((s,x)=>s+(+x.hours||0),0);
+ const opt=ALL.map(a=>`<option value="${a.s}|${a.id}">${SITES[a.s]} · ${esc(a.t)}</option>`).join('')+'<option value="|other">อื่น ๆ (ระบุในหมายเหตุ)</option><option value="|cerpre">แบบวัดก่อนเรียน</option><option value="|cerpost">แบบวัดหลังเรียน</option>';
+ const name=x=>{const a=ALL.find(a=>a.s===x.site&&a.id===x.act);return a?SITES[a.s]+' · '+a.t:({cerpre:'แบบวัดก่อนเรียน',cerpost:'แบบวัดหลังเรียน'}[x.act]||'อื่น ๆ')};
+ W.innerHTML=`<div class="kpi"><div><b>${sum}</b><small>ชั่วโมงที่สอนแล้ว</small></div><div><b>${Math.max(0,30-sum)}</b><small>ชั่วโมงที่ยังขาด (เป้า 30)</small></div><div><b>${L.length}</b><small>ครั้งที่บันทึก</small></div><div><b>${Math.min(100,Math.round(sum/30*100))}%</b><small>ของเป้าโครงการ</small></div></div>
+ <form id="fm" class="card noprint"><b>บันทึกการสอน</b><div class="bar"><input type="date" id="hD" required aria-label="วันที่สอน"><select id="hA" aria-label="กิจกรรม">${opt}</select><input id="hC" placeholder="ห้อง เช่น 1/1" required aria-label="ห้อง" style="width:110px"><input id="hH" type="number" min="0.5" max="8" step="0.5" value="1" required aria-label="ชั่วโมง" style="width:90px"><span class="mut">ชม.</span></div>
+ <div class="bar"><input id="hN" placeholder="หมายเหตุ / สิ่งที่สังเกตได้ / สะท้อนผล" style="flex:1;min-width:220px"><input id="hP" type="url" placeholder="ลิงก์รูปภาพ/คลิป (Google Drive)" style="flex:1;min-width:200px"><button class="btn p">บันทึก</button></div><p id="hM" class="mut"></p></form>
+ <div class="bar noprint"><span class="sp"></span><button class="btn" id="ex">⬇ Excel</button><button class="btn" id="pr">🖨 พิมพ์สรุปชั่วโมง</button></div>
+ <div class="card"><h3 style="margin:0">สรุปการนำไปใช้ในห้องเรียน โครงการ STEM·SELC</h3><p class="mut" style="margin:4px 0 0">ครูคุ้ม อชิตพล บุณรัตน์ · กลุ่มสาระการเรียนรู้คณิตศาสตร์ โรงเรียนวังโพรงพิทยาคม · รวม ${sum} ชั่วโมง</p></div>
+ <div class="tw"><table><thead><tr><th>วันที่</th><th>ห้อง</th><th>กิจกรรม</th><th>ชม.</th><th>หมายเหตุ</th><th>หลักฐาน</th><th class="noprint"></th></tr></thead><tbody>
+ ${L.map(x=>`<tr><td>${esc(x.date)}</td><td>${esc(x.cls)}</td><td>${esc(name(x))}</td><td>${esc(x.hours)}</td><td class="ans">${esc(x.note)}</td><td>${/^https?:\/\//.test(x.photo||'')?`<a href="${esc(x.photo)}" target="_blank" rel="noopener">เปิด</a>`:''}</td><td class="noprint"><button class="btn" data-del="${esc(x.id)}" aria-label="ลบรายการ">✕</button></td></tr>`).join('')||'<tr><td colspan="7" class="mut">ยังไม่มีบันทึก</td></tr>'}
+ <tr><th colspan="3">รวม</th><th>${sum}</th><th colspan="3"></th></tr></tbody></table></div>`;
+ $('hD').value=new Date(Date.now()+7*3600e3).toISOString().slice(0,10);
+ $('fm').onsubmit=async e=>{e.preventDefault();const [site,act]=$('hA').value.split('|');const d={date:$('hD').value,site,act,cls:$('hC').value.trim(),hours:+$('hH').value,note:$('hN').value.trim(),photo:$('hP').value.trim(),by:DB.auth.currentUser?DB.auth.currentUser.uid:'',created:new Date().toISOString()};
+  if(!(d.hours>0)){$('hM').textContent='ใส่จำนวนชั่วโมง';return}$('hM').textContent='กำลังบันทึก…';try{await DB.add('selclog',d);vHrs(W)}catch(err){$('hM').textContent='บันทึกไม่ได้ — ตรวจ firestore.rules (selclog)'}};
+ W.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{if(!confirm('ลบรายการนี้?'))return;try{await DB.del('selclog/'+b.dataset.del);vHrs(W)}catch(e){alert('ลบไม่ได้')}});
+ $('pr').onclick=()=>print();$('ex').onclick=()=>dlCSV('selc-ชั่วโมงสอน.csv',['วันที่','ห้อง','กิจกรรม','ชั่วโมง','หมายเหตุ','ลิงก์หลักฐาน'],L.map(x=>[x.date,x.cls,name(x),x.hours,x.note,x.photo]))}
+init();
+</script>
+</body>
+</html>

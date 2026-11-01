@@ -77,6 +77,10 @@ h2{font-size:22px;margin:0 0 4px}
 .res a b{display:block}.res a small{color:var(--mut)}
 footer{border-top:1px solid var(--line);margin-top:36px;padding:18px 0 30px;color:var(--mut);font-size:14px}
 .note{font-size:13.5px;color:var(--mut)}
+.tw2{overflow-x:auto;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+.tw2 table{width:100%;border-collapse:collapse;font-size:14px;min-width:720px}.tw2 th,.tw2 td{padding:9px 11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.tw2 th{background:var(--soft)}
+.tw2 td:first-child{font-weight:600;border-left:5px solid var(--c)}
+.pdf{font-size:13px;font-weight:600;color:var(--c);text-decoration:none;border:1px solid var(--line);border-radius:10px;padding:6px 10px;min-height:40px;display:inline-flex;align-items:center}
 </style>
 </head>
 <body>
@@ -107,6 +111,11 @@ footer{border-top:1px solid var(--line);margin-top:36px;padding:18px 0 30px;colo
 <div class="grid" id="grid"></div>
 </section>
 
+<section class="blk" id="int">
+<h2>เชื่อมโยงข้ามวิชา: วิทยาศาสตร์ · คณิตศาสตร์ · สังคมศึกษา</h2><p class="sub">ใช้ปรากฏการณ์เดียวกันทั้ง 3 วิชา ตามแกนกลางการบูรณาการของ SELC — ครูวิทย์อธิบาย "ทำไม" ครูคณิตหา "หลักฐานเชิงตัวเลข" ครูสังคมชวนคิด "ใครได้รับผลกระทบ"</p>
+<div class="tw2" id="intT"></div>
+</section>
+
 <section class="blk" id="time">
 <h2>ปฏิทินไทม์ไลน์</h2><p class="sub">เป้าหมายโครงการ: นำไปใช้สอนจริงไม่น้อยกว่า 30 ชั่วโมง ช่วง พ.ย. 2569 – ก.พ. 2570</p>
 <div class="prog"><div class="pr-top"><span>สอนแล้ว <span id="hDone">0</span> / <span id="hPlan">0</span> ชั่วโมง (เป้า 30)</span><span id="hPct">0%</span></div><div class="bar"><div id="hBar"></div></div>
@@ -118,6 +127,8 @@ footer{border-top:1px solid var(--line);margin-top:36px;padding:18px 0 30px;colo
 <section class="blk">
 <h2>เครื่องมือและแหล่งข้อมูล</h2>
 <div class="res">
+<a href="selc/codap-guide.pdf" target="_blank" rel="noopener"><b>📄 คู่มือ CODAP ภาษาไทย (PDF)</b><small>6 ขั้นใช้ CODAP พิมพ์แจกนักเรียนได้ 1 หน้า</small></a>
+<a href="selc-dash.html"><b>📊 แดชบอร์ด SELC (ครู)</b><small>ให้คะแนน CER · ก่อน/หลังเรียน · บันทึกชั่วโมงสอน · รวมข้อมูลทั้งห้อง</small></a>
 <a href="https://codap.concord.org/app/" target="_blank" rel="noopener"><b>CODAP ↗</b><small>วิเคราะห์ข้อมูลฟรีในเบราว์เซอร์ ลากไฟล์ CSV จากกิจกรรมมาวางได้เลย</small></a>
 <a href="https://sagemodeler.concord.org/" target="_blank" rel="noopener"><b>SageModeler ↗</b><small>สร้างแบบจำลองเชิงเหตุและผล / วงจรป้อนกลับ</small></a>
 <a href="https://www.seameo-stemed.org/" target="_blank" rel="noopener"><b>SEAMEO STEM-ED ↗</b><small>หน่วยงานประสานโครงการ SELC</small></a>
@@ -148,6 +159,7 @@ const PLAN=[
 {m:'2569-10',d:'9 ต.ค.',t:'ปฐมนิเทศโครงการ (ออนไลน์)',s:'SELC Online Training #1 · 09:00–11:00 น.',ms:1},
 {m:'2569-10',d:'ต.ค.',t:'อบรมออนไลน์: 3-D Learning และ CER',s:'SEAMEO STEM-ED',ms:1},
 {m:'2569-11',d:'พ.ย.',t:'อบรมเชิงปฏิบัติการ On-site',s:'ศูนย์เครือข่าย ม.นเรศวร',ms:1},
+{m:'2569-11',d:'สัปดาห์ 1',t:'แบบวัดการอธิบายด้วยหลักฐาน (ก่อนเรียน) ทุกชั้น',s:'อยู่ในบทแรกของภาคเรียนในเว็บแต่ละชั้น · ไม่นับชั่วโมง',ms:1},
 {m:'2569-11',a:'water',d:'สัปดาห์ 2–3'},
 {m:'2569-11',a:'led',d:'สัปดาห์ 2–3'},
 {m:'2569-11',a:'trash',d:'เริ่มชั่งขยะ สัปดาห์ 2'},
@@ -158,13 +170,14 @@ const PLAN=[
 {m:'2570-01',a:'solar',d:'สัปดาห์ 3'},
 {m:'2570-01',a:'rain',d:'เริ่มบันทึกฝน สัปดาห์ 1'},
 {m:'2570-02',a:'heat',d:'สัปดาห์ 1–2'},
+{m:'2570-02',d:'สัปดาห์ 3',t:'แบบวัดการอธิบายด้วยหลักฐาน (หลังเรียน) ทุกชั้น',s:'เทียบผลในแดชบอร์ด SELC แท็บก่อน/หลังเรียน',ms:1},
 {m:'2570-02',d:'ก.พ.',t:'สรุปผล ส่งหลักฐานเชิงประจักษ์ และรับการนิเทศติดตาม',s:'ครบ 30 ชั่วโมง',ms:1}];
 const TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 /* แท็บกิจกรรม */
 let cur='all';
 function tabs(){$('tabs').innerHTML=[['all','ทั้งหมด','var(--g)'],...Object.entries(G).map(([k,v])=>[k,v.n,v.c])].map(([k,n,c])=>`<button type="button" class="tab" style="--c:${c}" data-k="${k}" aria-pressed="${k===cur}">${n}</button>`).join('');
  $('tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>{cur=b.dataset.k;tabs();grid()})}
-function grid(){$('grid').innerHTML=ACTS.filter(a=>cur==='all'||a.g===cur).map(a=>{const g=G[a.g];return`<article class="act" style="--c:${g.c}"><span class="ch">${g.n} · ${esc(a.ch)}</span><h3>${esc(a.t)}</h3><p>${esc(a.d)}</p><div class="tg">${a.tg.map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="ft"><span class="hr">ประมาณ ${a.h} ชั่วโมง</span><a class="go" href="${g.url}${a.link}">เปิดบทเรียน →</a></div></article>`}).join('')}
+function grid(){$('grid').innerHTML=ACTS.filter(a=>cur==='all'||a.g===cur).map(a=>{const g=G[a.g];return`<article class="act" style="--c:${g.c}"><span class="ch">${g.n} · ${esc(a.ch)}</span><h3>${esc(a.t)}</h3><p>${esc(a.d)}</p><div class="tg">${a.tg.map(x=>`<span>${esc(x)}</span>`).join('')}</div><div class="ft"><span class="hr">~${a.h} ชม.</span><span style="display:flex;gap:6px"><a class="pdf" href="selc/${a.g}-${a.id}.pdf" target="_blank" rel="noopener">📄 ใบงาน</a><a class="go" href="${g.url}${a.link}">เปิดบทเรียน →</a></span></div></article>`}).join('')}
 /* ไทม์ไลน์ */
 const K='selc-done';let D={};try{D=JSON.parse(localStorage.getItem(K)||'{}')}catch(e){}
 function tl(){const by={};PLAN.forEach(p=>(by[p.m]=by[p.m]||[]).push(p));const now=new Date(),nk=(now.getFullYear()+543)+'-'+String(now.getMonth()+1).padStart(2,'0');
@@ -172,7 +185,17 @@ function tl(){const by={};PLAN.forEach(p=>(by[p.m]=by[p.m]||[]).push(p));const n
   const a=ACTS.find(x=>x.id===p.a),g=G[a.g],dn=!!D[a.id];return`<div class="ev${dn?' done':''}" style="--c:${g.c}"><span class="dt">${g.n} · ${esc(p.d)}</span><div><b>${esc(a.t)}</b><small>${esc(a.ch)} · ${a.h} ชม. · <a href="${g.url}${a.link}">เปิด</a></small></div><label><input type="checkbox" data-id="${a.id}" ${dn?'checked':''}>สอนแล้ว</label></div>`}).join('')}</div>`}).join('');
  $('tl').querySelectorAll('input[data-id]').forEach(c=>c.onchange=()=>{if(c.checked)D[c.dataset.id]=new Date().toISOString().slice(0,10);else delete D[c.dataset.id];try{localStorage.setItem(K,JSON.stringify(D))}catch(e){}tl()});
  const plan=ACTS.reduce((s,a)=>s+a.h,0),done=ACTS.filter(a=>D[a.id]).reduce((s,a)=>s+a.h,0);$('hPlan').textContent=plan;$('hDone').textContent=done;const pc=Math.min(100,Math.round(done/30*100));$('hPct').textContent=pc+'% ของเป้า';$('hBar').style.width=pc+'%'}
-tabs();grid();tl();
+const INT={water:['วัฏจักรน้ำ การซึมผ่านของดิน ชนิดของดิน','น้ำท่วมขังในชุมชน ผังเมืองและพื้นที่สีเขียว'],
+roof:['ปริมาณน้ำฝน การวัดฝน ฤดูกาล','การจัดการน้ำในชุมชน ภัยแล้ง การเก็บน้ำฝน'],
+heat:['การถ่ายโอนความร้อน การดูดกลืน/สะท้อนรังสี','เกาะความร้อนในเมือง การออกแบบพื้นที่ร่มเงา'],
+led:['พลังงานไฟฟ้า กำลังไฟฟ้า การผลิตไฟฟ้า','ค่าไฟของครัวเรือน นโยบายประหยัดพลังงาน'],
+albedo:['การสะท้อนแสง สี กับการดูดกลืนความร้อน น้ำแข็งขั้วโลก','ผลกระทบต่อประเทศชายฝั่ง น้ำทะเลสูงขึ้นในอาเซียน'],
+rain:['ลมฟ้าอากาศ มรสุม การพยากรณ์อากาศ','การวางแผนเพาะปลูก อาชีพเกษตรกรในท้องถิ่น'],
+trash:['การย่อยสลาย พลาสติก ห่วงโซ่อาหาร','การจัดการขยะของโรงเรียนและเทศบาล'],
+energy:['การผลิตไฟฟ้าจากเชื้อเพลิงฟอสซิล ก๊าซเรือนกระจก','ข้อตกลงลดก๊าซเรือนกระจก Net Zero'],
+solar:['เซลล์สุริยะ การเปลี่ยนรูปพลังงาน','Climate Justice: ใครเข้าถึงพลังงานสะอาดได้ ความเหลื่อมล้ำ']};
+function intT(){$('intT').innerHTML=`<table><tr><th>กิจกรรม (คณิต)</th><th>คณิตศาสตร์</th><th>วิทยาศาสตร์ (DCI)</th><th>สังคมศึกษา (Climate Justice)</th></tr>${ACTS.map(a=>`<tr style="--c:${G[a.g].c}"><td>${G[a.g].n} · ${esc(a.t)}</td><td>${esc(a.tg[0])}</td><td>${esc(INT[a.id][0])}</td><td>${esc(INT[a.id][1])}</td></tr>`).join('')}</table>`}
+tabs();grid();tl();intT();
 </script>
 <script data-goatcounter="https://mathdevth.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
