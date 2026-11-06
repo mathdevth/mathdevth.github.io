@@ -60,6 +60,7 @@ dialog{border:1px solid var(--line);border-radius:16px;background:var(--card);co
 dialog::backdrop{background:rgba(0,0,0,.35)}
 dialog textarea,dialog select{width:100%;border:1px solid var(--line);border-radius:10px;padding:8px;background:var(--bg)}
 .dl li{margin:3px 0}
+.grp.xg{margin-top:18px;padding-top:10px;border-top:2px dashed var(--line);color:var(--cc)}
 .sv{font-size:13px}.sv.ok{color:var(--ok)}.sv.w{color:var(--warn)}
 footer{text-align:center;color:var(--soft);font-size:13px;padding:24px 16px 40px}
 </style>
@@ -86,29 +87,36 @@ footer{text-align:center;color:var(--soft);font-size:13px;padding:24px 16px 40px
   <div class="cols"><div><h3 style="margin:4px 0">✅ หัวข้อที่สอน <span class="mute" id="pt"></span></h3><div id="tl"></div>
    <div class="add"><input id="tA" placeholder="เพิ่มหัวข้อเอง เช่น ทบทวนก่อนสอบ"><button class="btn" id="tB">+ เพิ่ม</button></div></div>
   <div><h3 style="margin:4px 0">📝 งานที่สั่ง <span class="mute" id="pa"></span></h3><div id="al"></div>
-   <div class="add"><input id="aA" placeholder="เพิ่มงานเอง เช่น การบ้านหน้า 45"><button class="btn" id="aB">+ เพิ่ม</button></div></div></div>
+   <div class="add"><input id="aA" placeholder="เพิ่มงานเอง เช่น การบ้านหน้า 45"><button class="btn" id="aB">+ เพิ่ม</button></div>
+   <div class="add"><button class="btn" id="iB" style="flex:1">📋 วางรายการจากไก่ทวง</button></div></div></div>
  </section>
 </main>
 </div>
 <dialog id="dlg"><h3 id="dT" style="margin-top:0"></h3><ul class="dl" id="dL"></ul>
  <label class="mute">บันทึกของวันนี้</label><textarea id="dN" rows="4" placeholder="เช่น ม.1/2 งดเรียน กีฬาสี · เลื่อนสอบย่อยเป็นวันศุกร์"></textarea>
  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn" id="dC">ปิด</button><button class="btn pri" id="dS">บันทึก</button></div></dialog>
+<dialog id="imp"><h3 style="margin-top:0">📋 วางรายการงานจากไก่ทวง · <span id="iC"></span></h3>
+ <p class="mute" style="margin:0 0 8px">ก๊อปชื่อคอลัมน์งานจากไฟล์ Excel ที่ export จากไก่ทวง (ลากคลุมแถวหัวตาราง) แล้ววางได้เลย หรือพิมพ์ทีละบรรทัดก็ได้ · บรรทัดที่ลงท้ายด้วย <b>:</b> จะเป็นหัวข้อกลุ่ม · คอลัมน์ เลขที่/ชื่อ/รวม ตัดออกให้อัตโนมัติ</p>
+ <textarea id="iT" rows="9" placeholder="หน่วยที่ 1 อัตราส่วน:&#10;ใบงานที่ 1.1 อัตราส่วนหลายจำนวน&#10;ใบงานที่ 1.2 สัดส่วน&#10;แบบฝึกหัด 1.3 ร้อยละ"></textarea>
+ <p class="mute" id="iP" style="margin:6px 0 0"></p>
+ <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px"><button class="btn" id="iX">ปิด</button><button class="btn pri" id="iS">เพิ่มรายการ</button></div></dialog>
 <footer>© 2569 ครูคุ้ม อชิตพล บุณรัตน์ · โรงเรียนวังโพรงพิทยาคม</footer>
 <script>
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 /* ---------- รายวิชา (หัวข้อดึงจากเว็บแต่ละชั้น) ---------- */
 const T=(g,a)=>a.map(([k,t])=>({id:k,k,t,g}));
+const XG='➕ ประเด็นเสริม · PhBL',X=a=>T(XG,a).map(o=>(o.ex=1,o));
 const MS=n=>Array.from({length:n},(_,i)=>['ภ'+(i+1),'ภารกิจ PhBL ที่ '+(i+1)]);
 const COURSES=[
  {id:'m1',n:'คณิต ม.1',code:'ค21102',c:'--c1',topics:[...T('1 อัตราส่วน',[['1.1','อัตราส่วนหลายจำนวน'],['1.2','สัดส่วน'],['1.3','ร้อยละและการนำไปใช้']]),...T('2 การสร้างทางเรขาคณิต',[['2.1','การสร้างพื้นฐาน'],['2.2','มุมและเส้นขนาน'],['2.3','ใช้ในชีวิตจริง']]),...T('3 สมการเชิงเส้นสองตัวแปร',[['3.1','กราฟความสัมพันธ์'],['3.2','สมการสองตัวแปร'],['3.3','ใช้ในชีวิตจริง']]),...T('4 สถิติ',[['4.1–4.2','คำถามและการเก็บข้อมูล'],['4.3','การนำเสนอข้อมูล'],['4.4','ใช้ในชีวิตจริง']])],
-  tasks:[...T('ใบงาน',[['ใบ1','ใบงานหน่วย 1 อัตราส่วน'],['ใบ2','ใบงานหน่วย 2 การสร้าง'],['ใบ3','ใบงานหน่วย 3 สมการสองตัวแปร'],['ใบ4','ใบงานหน่วย 4 สถิติ']]),...T('แบบทดสอบหลังเรียน',[['ท1','หลังเรียนหน่วย 1'],['ท2','หลังเรียนหน่วย 2'],['ท3','หลังเรียนหน่วย 3'],['ท4','หลังเรียนหน่วย 4']]),...T('PhBL',MS(8)),...T('PA',[['CER','งานเขียน CER หน่วยสถิติ']])]},
- {id:'m1s',n:'เสริมทักษะ ม.1',code:'ค20201',c:'--c6',topics:T('เลขยกกำลัง',[['3.1','การเขียนเลขยกกำลัง'],['3.2','การคูณและการหาร'],['3.3','สัญกรณ์วิทยาศาสตร์'],['3.4','ใช้ในชีวิตจริง']]),tasks:T('งาน',[['ฝึก1','แบบฝึกเลขยกกำลัง'],['ทด','แบบทดสอบเลขยกกำลัง']])},
+  tasks:[],extra:[...X(MS(8)),...X([['CER','งานเขียน CER หน่วยสถิติ (PA)']])]},
+ {id:'m1s',n:'เสริมทักษะ ม.1',code:'ค20201',c:'--c6',topics:T('เลขยกกำลัง',[['3.1','การเขียนเลขยกกำลัง'],['3.2','การคูณและการหาร'],['3.3','สัญกรณ์วิทยาศาสตร์'],['3.4','ใช้ในชีวิตจริง']]),tasks:[],extra:[]},
  {id:'m3',n:'คณิต ม.3',code:'ค23102',c:'--c2',topics:[...T('1 ระบบสมการ',[['1.1','กราฟของระบบสมการ'],['1.2','การแก้ระบบสมการ'],['1.3','โจทย์ปัญหา']]),...T('2 วงกลม',[['2.1','ส่วนต่าง ๆ ของวงกลม'],['2.2','มุมในวงกลม'],['2.3','คอร์ด'],['2.4','เส้นสัมผัสวงกลม']]),...T('3 พีระมิด กรวย ทรงกลม',[['3.1','พีระมิด'],['3.2','กรวย'],['3.3','ทรงกลม']]),...T('4 ความน่าจะเป็น',[['4.1','การทดลองสุ่มและเหตุการณ์'],['4.2','ความน่าจะเป็นของเหตุการณ์'],['4.3','การนำไปใช้']]),...T('5 อัตราส่วนตรีโกณมิติ',[['5.1ก','อัตราส่วนตรีโกณมิติ'],['5.1ข','หาความยาวด้านและมุมพิเศษ'],['5.2','การนำไปใช้']])],
-  tasks:[...T('ใบงาน',[1,2,3,4,5].map(i=>['ใบ'+i,'ใบงานหน่วย '+i])),...T('แบบทดสอบหลังเรียน',[1,2,3,4,5].map(i=>['ท'+i,'หลังเรียนหน่วย '+i])),...T('PhBL',MS(8))]},
+  tasks:[],extra:X(MS(8))},
  {id:'m5',n:'คณิตพื้นฐาน ม.5',code:'ค32102',c:'--c3',topics:[...T('3 ลำดับและอนุกรม',[['3.1ก–ข','ลำดับและพจน์ทั่วไป'],['3.1ค','ลำดับเลขคณิต'],['3.1ง','ลำดับเรขาคณิต'],['3.2ก','อนุกรมและสัญลักษณ์ Σ'],['3.2ข','อนุกรมเลขคณิต'],['3.2ค','อนุกรมเรขาคณิต']]),...T('4 ดอกเบี้ยและมูลค่าของเงิน',[['4.1','ดอกเบี้ยเชิงเดียวและทบต้น'],['4.2','มูลค่าของเงิน'],['4.3','ค่ารายงวด']])],
-  tasks:[...T('ใบงาน',[['ใบ3','ใบงานหน่วย 3'],['ใบ4','ใบงานหน่วย 4']]),...T('แบบทดสอบหลังเรียน',[['ท3','หลังเรียนหน่วย 3'],['ท4','หลังเรียนหน่วย 4']]),...T('PhBL',MS(8))]},
+  tasks:[],extra:X(MS(8))},
  {id:'m5p',n:'คณิตเพิ่มเติม ม.5',code:'ค32202',c:'--c5',topics:[...T('1 จำนวนเชิงซ้อน',[['1.1','จำนวนเชิงซ้อน'],['1.2','สมบัติเชิงพีชคณิตและสังยุค'],['1.3','กราฟและค่าสัมบูรณ์'],['1.4','รากที่สองและสมการกำลังสอง'],['1.5','รูปเชิงขั้วและเดอมัวฟวร์'],['1.6','รากที่ n'],['1.7','สมการพหุนาม']]),...T('2 หลักการนับเบื้องต้น',[['2.1','หลักการบวกและหลักการคูณ'],['2.2ก','แฟกทอเรียล'],['2.2ข','เรียงสับเปลี่ยนเชิงเส้น'],['2.2ค','เรียงสับเปลี่ยนสิ่งของซ้ำ'],['2.2ง','เรียงสับเปลี่ยนเชิงวงกลม'],['2.3','การจัดหมู่'],['2.4','ทฤษฎีบททวินาม']]),...T('3 ความน่าจะเป็น',[['3.1','การทดลองสุ่มและเหตุการณ์'],['3.2ก','ความน่าจะเป็นของเหตุการณ์'],['3.2ข','กฎสำคัญของความน่าจะเป็น']])],
-  tasks:[...T('ใบงาน',[1,2,3].map(i=>['ใบ'+i,'ใบงานหน่วย '+i])),...T('แบบทดสอบหลังเรียน',[1,2,3].map(i=>['ท'+i,'หลังเรียนหน่วย '+i]))]},
+  tasks:[],extra:[]},
  {id:'is2',n:'IS ม.2',code:'I20202',c:'--c4',topics:[...T('01 โลกของรายงาน',[['1a','รายงานที่ดีมีลักษณะอย่างไร'],['1b','ภาษาแบบไหนเหมาะกับรายงาน'],['1c','จากเรื่องกว้าง สู่ประเด็นที่ศึกษาได้'],['1d','โครงร่างรายงานของกลุ่ม']]),...T('02 เรียงร้อยถ้อยคำ',[['2a','ห้องเขียน (ส่วนเนื้อหา)'],['2b','สร้างรายการอ้างอิง'],['2c','ตรวจแหล่งข้อมูลทีละแหล่ง'],['2d','ส่วนนำ'],['2e','ตรวจสอบให้รอบด้าน']]),...T('03 เล่าสู่กันฟัง',[['3a','ร่างโพสเตอร์'],['3b','บทพูด 3 ช่วง'],['3c','ซ้อมจับเวลา'],['3d','เวทีไอเดีย']])],
   tasks:[...T('ใบงาน PDF',[['ws1','ใบงานที่ 1 การเขียนรายงาน'],['ws2','เรื่องที่ใช่ สู่โครงร่างที่ชัด'],['ws3','องค์ประกอบของรายงาน'],['ws4','เรียงร้อยถ้อยคำ'],['ws5','นักสืบแหล่งข้อมูล'],['ws6','ข้อค้นพบของฉัน'],['ws7','อาชีพในฝันฉันอยากเล่า'],['ws8','แบบบันทึกสะท้อนคิด']]),...T('ชิ้นงานหลัก',[['โครง','โครงร่างรายงาน (15)'],['รายงาน','รายงาน 2,500 คำ (40)'],['โพส','โพสเตอร์ + นำเสนอ (25)'],['เวที','เวทีไอเดีย (20)']])]}
 ];
@@ -124,10 +132,10 @@ window.addEventListener('beforeunload',e=>{if(dirty){push();e.preventDefault();e
 const todayISO=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const TM=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'],TMs=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const thd=iso=>{if(!iso)return'';const[y,m,d]=iso.split('-').map(Number);return d+' '+TMs[m-1]+' '+String(y+543).slice(2)};
-const C=id=>COURSES.find(c=>c.id===id),items=(c,k)=>[...c[k==='t'?'topics':'tasks'],...((ST.x[c.id]||{})[k]||[])];
+const C=id=>COURSES.find(c=>c.id===id),items=(c,k)=>k==='t'?[...c.topics,...((ST.x[c.id]||{}).t||[])]:[...c.tasks,...((ST.x[c.id]||{}).a||[]),...(c.extra||[])],main=(c,k)=>items(c,k).filter(i=>!i.ex);
 const col=c=>`var(${c.c})`;
 /* ---------- ภาพรวม ---------- */
-function drawOv(){$('ov').innerHTML=COURSES.map(c=>{const nt=items(c,'t'),na=items(c,'a'),dt=nt.filter(i=>(ST.t[c.id]||{})[i.id]).length,da=na.filter(i=>(ST.a[c.id]||{})[i.id]).length,p=nt.length?Math.round(dt*100/nt.length):0;
+function drawOv(){$('ov').innerHTML=COURSES.map(c=>{const nt=items(c,'t'),na=main(c,'a'),dt=nt.filter(i=>(ST.t[c.id]||{})[i.id]).length,da=na.filter(i=>(ST.a[c.id]||{})[i.id]).length,p=nt.length?Math.round(dt*100/nt.length):0;
  return`<button class="ovc${c.id===cur?' on':''}" style="--cc:${col(c)}" data-c="${c.id}"><span class="mute">${c.code}</span><b>${esc(c.n)}</b><div class="bar"><i style="width:${p}%"></i></div><span class="mute">สอน ${dt}/${nt.length} · งาน ${da}/${na.length}</span></button>`}).join('');
  $('ov').querySelectorAll('.ovc').forEach(b=>b.onclick=()=>{cur=b.dataset.c;drawAll()})}
 /* ---------- ปฏิทิน ---------- */
@@ -144,17 +152,27 @@ function openDay(iso){const[y,m,d]=iso.split('-').map(Number);$('dT').textConten
 $('dC').onclick=()=>$('dlg').close();
 /* ---------- เช็กลิสต์ ---------- */
 function drawList(k){const c=C(cur),box=$(k==='t'?'tl':'al'),m=ST[k][c.id]||{},list=items(c,k);let g=null,h='';
- list.forEach(i=>{if(i.g!==g){g=i.g;h+=`<div class="grp">${esc(g)}</div>`}const v=m[i.id];
+ list.forEach(i=>{if(i.g!==g){g=i.g;h+=`<div class="grp${i.ex?' xg':''}">${esc(g)}</div>`}const v=m[i.id];
   h+=`<div class="it${v?' done':''}" data-i="${esc(i.id)}"><input type="checkbox" ${v?'checked':''} aria-label="${esc(i.t)}"><span class="tx"><span class="k">${esc(i.k)}</span>${esc(i.t)}</span>`+
    (v?`<span class="lb">${k==='t'?'สอน':'สั่ง'}</span><input type="date" class="d1" value="${esc(v.d||'')}">`+(k==='a'?`<span class="lb">ส่ง</span><input type="date" class="d2" value="${esc(v.due||'')}">`:''):'')+
    (i.own?`<button class="x" title="ลบรายการนี้">✕</button>`:'')+`</div>`});
- box.innerHTML=h;const n=list.filter(i=>m[i.id]).length;$(k==='t'?'pt':'pa').textContent=`${n}/${list.length}`;
+ if(k==='a'&&!list.some(i=>!i.ex))h=`<p class="mute" style="margin:6px 0">ยังไม่มีรายการงานของวิชานี้ กด <b>📋 วางรายการจากไก่ทวง</b> ด้านล่าง</p>`+h;
+ box.innerHTML=h;const ml=list.filter(i=>!i.ex),n=ml.filter(i=>m[i.id]).length,xl=list.filter(i=>i.ex);$(k==='t'?'pt':'pa').textContent=`${n}/${ml.length}`+(xl.length?` · เสริม ${xl.filter(i=>m[i.id]).length}/${xl.length}`:'');
  box.querySelectorAll('.it').forEach(r=>{const id=r.dataset.i;
   r.querySelector('input[type=checkbox]').onchange=e=>{ST[k][c.id]=ST[k][c.id]||{};if(e.target.checked)ST[k][c.id][id]={d:todayISO(),due:''};else delete ST[k][c.id][id];save();drawAll()};
   const d1=r.querySelector('.d1'),d2=r.querySelector('.d2');if(d1)d1.onchange=()=>{ST[k][c.id][id].d=d1.value;save();drawCal()};if(d2)d2.onchange=()=>{ST[k][c.id][id].due=d2.value;save();drawCal()};
   const x=r.querySelector('.x');if(x)x.onclick=()=>{if(!confirm('ลบรายการนี้?'))return;const X=ST.x[c.id][k];X.splice(X.findIndex(o=>o.id===id),1);if(ST[k][c.id])delete ST[k][c.id][id];save();drawAll()}})}
 function addOwn(k){const inp=$(k==='t'?'tA':'aA'),v=inp.value.trim();if(!v)return;const c=C(cur);ST.x[c.id]=ST.x[c.id]||{};ST.x[c.id][k]=ST.x[c.id][k]||[];ST.x[c.id][k].push({id:'o'+Date.now().toString(36),k:'+',t:v,g:'เพิ่มเอง',own:1});inp.value='';save();drawAll()}
 $('tB').onclick=()=>addOwn('t');$('aB').onclick=()=>addOwn('a');$('tA').onkeydown=e=>{if(e.key==='Enter')addOwn('t')};$('aA').onkeydown=e=>{if(e.key==='Enter')addOwn('a')};
+const SKIP=/^(ที่|ลำดับ|เลขที่|เลขประจำตัว|รหัส|ชื่อ|ชื่อ-?\s*สกุล|ชื่อ-?นามสกุล|นามสกุล|ห้อง|ชั้น|รวม|คะแนนรวม|รวมคะแนน|เกรด|ระดับผลการเรียน|ร้อยละ|exp|หมายเหตุ|สถานะ|\d+(\.\d+)?)$/i;
+function parseImp(txt){let g='งานจากไก่ทวง';const out=[];txt.replace(/\r/g,'').split('\n').forEach(line=>{const cells=line.split('\t').map(x=>x.trim()).filter(Boolean);
+ if(cells.length===1&&/[:：]$/.test(cells[0])){g=cells[0].replace(/[:：]$/,'').trim()||g;return}
+ cells.forEach(t=>{t=t.replace(/\s+/g,' ').replace(/\s*\(\s*\d+(\.\d+)?\s*(คะแนน)?\s*\)\s*$/,'').trim();if(!t||SKIP.test(t)||t.length<2)return;out.push({g,t})})});return out}
+function openImp(){const c=C(cur);$('iC').textContent=c.n;$('iT').value='';$('iP').textContent='';$('imp').showModal();$('iT').focus()}
+$('iT').oninput=()=>{const r=parseImp($('iT').value);$('iP').textContent=r.length?`จะเพิ่ม ${r.length} รายการ: `+r.slice(0,4).map(x=>x.t).join(' · ')+(r.length>4?' …':''):''};
+$('iS').onclick=()=>{const c=C(cur),r=parseImp($('iT').value);if(!r.length){$('iP').textContent='ไม่พบรายการ';return}ST.x[c.id]=ST.x[c.id]||{};const A=ST.x[c.id].a=ST.x[c.id].a||[];const have=new Set(items(c,'a').map(i=>i.t));let n=0,b=Date.now();
+ r.forEach(o=>{if(have.has(o.t))return;have.add(o.t);A.push({id:'k'+(b++).toString(36),k:'•',t:o.t,g:o.g,own:1});n++});save();$('imp').close();drawAll();sv(`เพิ่ม ${n} รายการ`+(r.length-n?` (ข้ามที่ซ้ำ ${r.length-n})`:''),'ok')};
+$('iX').onclick=()=>$('imp').close();$('iB').onclick=openImp;
 function drawTabs(){$('tabs').innerHTML=COURSES.map(c=>`<button role="tab" style="--cc:${col(c)}" aria-selected="${c.id===cur}" data-c="${c.id}">${esc(c.n)}</button>`).join('');
  $('tabs').querySelectorAll('button').forEach(b=>b.onclick=()=>{cur=b.dataset.c;try{localStorage.setItem(LS+':cur',cur)}catch(e){}drawAll()});document.querySelector('.cols').style.setProperty('--cc',col(C(cur)))}
 function drawAll(){drawOv();drawTabs();drawList('t');drawList('a');drawCal()}
