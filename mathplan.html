@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>แผนงานกลุ่มสาระคณิต 2570 · Math Lab ครูคุ้ม</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* Layout: graph-paper planner — summary strip, 12-month Gantt grid, then per-event prep cards with checklists */
+:root{
+  --bg:#f5f7f6; --paper:#ffffff; --fg:#1d2a2a; --muted:#5d6b6a; --line:#dbe3e1; --grid:#e9efed;
+  --p1:#2f6f9f; --p2:#c0612b; --p3:#6c4fa3; --adm:#7c8a88; --ok:#2e7d4f; --warn:#b7791f; --today:#d23c3c;
+  --display:"Anuphan","IBM Plex Sans Thai",system-ui,sans-serif; --body:"IBM Plex Sans Thai","Anuphan",system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#121817; --paper:#1a2221; --fg:#e4ecea; --muted:#9aaaa7; --line:#2c3836; --grid:#222c2b;
+  --p1:#6aa8d8; --p2:#e58a52; --p3:#a68be0; --adm:#8a9a97; --ok:#5cc184; --warn:#e2b34c; --today:#ff6b6b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121817; --paper:#1a2221; --fg:#e4ecea; --muted:#9aaaa7; --line:#2c3836; --grid:#222c2b;
+  --p1:#6aa8d8; --p2:#e58a52; --p3:#a68be0; --adm:#8a9a97; --ok:#5cc184; --warn:#e2b34c; --today:#ff6b6b; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.6}
+.wrap{max-width:1120px;margin:0 auto;padding-block:28px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:28px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.25}
+h1{font-size:clamp(1.6rem,4vw,2.3rem)} h2{font-size:1.25rem} h3{font-size:1.02rem}
+.sub{color:var(--muted);margin:4px 0 0}
+.num{font-variant-numeric:tabular-nums}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.proj{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:grid;gap:4px;min-width:0}
+.proj .tag{font-size:.75rem;letter-spacing:.04em;font-weight:600;display:flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+.proj .amt{font-family:var(--display);font-size:1.5rem;font-weight:700}
+.next{background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--today);border-radius:10px;padding:14px 16px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline}
+.next b{font-family:var(--display);font-size:1.1rem}
+.section{display:grid;gap:12px}
+.gantt-box{overflow-x:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px}
+.gantt{display:grid;grid-template-columns:minmax(190px,260px) repeat(12,minmax(44px,1fr));min-width:780px;font-size:.85rem;position:relative}
+.gantt .h{font-weight:600;text-align:center;padding:8px 0;border-bottom:1px solid var(--line);color:var(--muted);font-size:.78rem}
+.gantt .h.q{border-left:1px solid var(--line)}
+.gantt .lbl{padding:7px 10px;border-bottom:1px solid var(--grid);display:flex;gap:8px;align-items:center;min-width:0}
+.gantt .lbl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gantt .cell{border-bottom:1px solid var(--grid);border-left:1px dashed var(--grid);position:relative}
+.bar{position:absolute;top:7px;bottom:7px;border-radius:5px;opacity:.9}
+.bar.tent{opacity:.35;background-image:repeating-linear-gradient(45deg,transparent 0 5px,rgba(255,255,255,.35) 5px 10px)}
+.grouprow{grid-column:1/-1;padding:6px 10px;font-weight:700;font-family:var(--display);font-size:.82rem;background:var(--grid)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;color:var(--muted);font-size:.82rem}
+.legend i{display:inline-block;width:22px;height:10px;border-radius:3px;vertical-align:middle;margin-right:5px}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;counter-reset:s}
+.step{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px;position:relative}
+.step .k{font-family:var(--display);font-weight:700;font-size:.8rem;color:var(--muted);letter-spacing:.05em}
+.step p{margin:4px 0 0;font-size:.88rem}
+.filters{display:flex;flex-wrap:wrap;gap:8px}
+.filters button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--paper);color:var(--fg);border-radius:999px;padding:5px 14px;cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--p1);outline-offset:2px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.card{background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--c);border-radius:10px;padding:16px;display:grid;gap:10px;align-content:start;min-width:0}
+.card .meta{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:.83rem;color:var(--muted)}
+.pill{font-size:.75rem;font-weight:600;padding:2px 9px;border-radius:999px;border:1px solid currentColor}
+.pill.fixed{color:var(--ok)} .pill.tbd{color:var(--warn)}
+.prog{height:6px;background:var(--grid);border-radius:4px;overflow:hidden}
+.prog div{height:100%;background:var(--c);transition:width .3s}
+.cl{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.cl label{display:flex;gap:8px;align-items:flex-start;cursor:pointer;font-size:.9rem}
+.cl input{margin-top:5px;accent-color:var(--c);flex:none}
+.cl input:checked+span{color:var(--muted);text-decoration:line-through}
+.note{font-size:.82rem;color:var(--muted)}
+.who{font-size:.75rem;color:var(--muted);margin-left:4px;text-decoration:none!important}
+.owner{display:flex;gap:8px;align-items:center;font-size:.85rem}
+.owner input{flex:1;min-width:0;font:inherit;font-size:.85rem;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.budget{display:flex;justify-content:space-between;font-size:.85rem;border-top:1px dashed var(--line);padding-top:8px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<style>
+[hidden]{display:none!important}
+.login{max-width:380px;margin:12vh auto;background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:24px;display:grid;gap:12px;margin-left:max(16px,auto);margin-right:max(16px,auto)}
+.login input{font:inherit;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg)}
+.login button,.btn{font:inherit;font-weight:600;padding:9px 14px;border-radius:8px;border:1px solid var(--fg);background:var(--fg);color:var(--bg);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--fg);border-color:var(--line)}
+.acct{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+.err{color:var(--today);font-size:.88rem;min-height:1.2em}
+</style></head><body>
+<form class="login" id="login" hidden>
+  <h2>แผนงานกลุ่มสาระคณิตศาสตร์</h2>
+  <p class="note" style="margin:0">สำหรับครูที่ได้รับสิทธิ์เท่านั้น เข้าสู่ระบบด้วยบัญชีครูของ Math Lab</p>
+  <input id="lgE" type="email" placeholder="อีเมล" autocomplete="username" required>
+  <input id="lgP" type="password" placeholder="รหัสผ่าน" autocomplete="current-password" required>
+  <button type="submit">เข้าสู่ระบบ</button>
+  <div class="err" id="lgM"></div>
+  <a class="note" href="./">← กลับหน้า Math Lab</a>
+</form>
+<div id="app" hidden>
+<div class="wrap">
+  <div class="acct"><a href="./" class="note">← Math Lab</a><span style="flex:1"></span><span id="who"></span><button class="btn ghost" type="button" id="imp">นำเข้าข้อมูล (.json)</button><input type="file" id="impF" accept=".json" hidden><button class="btn ghost" type="button" id="out">ออกจากระบบ</button></div>
+  <header>
+    <h1>ปฏิทินงานกลุ่มสาระการเรียนรู้คณิตศาสตร์</h1>
+    <p class="sub">ปีงบประมาณ 2570 (ต.ค. 2569 – ก.ย. 2570) · โรงเรียนวังโพรงพิทยาคม</p>
+  </header>
+
+  <div class="strip" id="strip"></div>
+  <div class="next" id="next"></div>
+
+  <section class="section">
+    <h2>ภาพรวมทั้งปี</h2>
+    <div class="legend"><span><i style="background:var(--p1)"></i>8 กลุ่มสาระ</span><span><i style="background:var(--p2)"></i>ศตวรรษที่ 21</span><span><i style="background:var(--p3)"></i>พหุปัญญา</span><span><i style="background:var(--adm)"></i>งานบริหารโครงการ</span><span><i style="background:var(--p1);opacity:.35"></i>ช่วงที่ยังไม่ทราบวันจริง</span></div>
+    <div class="gantt-box"><div class="gantt" id="gantt"></div></div>
+  </section>
+
+  <section class="section">
+    <h2>ขั้นตอนเตรียมงานแข่งขันแต่ละรายการ</h2>
+    <div class="flow" id="flow"></div>
+  </section>
+
+  <section class="section">
+    <h2>เช็กลิสต์เตรียมการ</h2>
+    <p class="note" style="margin:0" id="syncnote">กำลังเชื่อมต่อข้อมูลร่วมของกลุ่มสาระ…</p>
+    <div class="filters" id="filters"></div>
+    <div class="cards" id="cards"></div>
+  </section>
+</div>
+
+</div>
+<script>
+let P={},E=[];
+const COMP=["ขออนุมัติโครงการ/เบิกงบรายการนี้","สมัครแข่งขันในระบบ ภายในวันปิดรับ","คัดเลือกนักเรียนและประกาศผล","ฝึกซ้อมตามตารางนัด","ขอหนังสือยินยอมผู้ปกครอง","ทำหนังสือขออนุญาตไปราชการ + คำสั่งครูผู้ควบคุม","จองรถ/ที่พัก","ยืมเงินทดรองราชการ","พิมพ์บัตรเข้าสอบ เตรียมเอกสารวันแข่ง","รายงานผล ส่งเกียรติบัตร/ภาพกิจกรรม","ส่งหลักฐานเบิกจ่าย/ล้างเงินยืม"];
+const MON=["ต.ค.","พ.ย.","ธ.ค.","ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย."];
+
+const fmt=n=>n.toLocaleString("th-TH");
+
+function renderStatic(){
+// strip
+document.getElementById("strip").innerHTML=["p1","p2","p3"].map(k=>{const p=P[k];const n=E.filter(x=>x.p===k).length;
+ return `<div class="proj"><div class="tag" style="color:${p.c}"><span class="dot" style="background:${p.c}"></span>โครงการ${p.s}</div><div class="amt num">${fmt(p.b)} <small style="font-size:.8rem;font-weight:500">บาท</small></div><div class="note">${p.n} · ${n} กิจกรรม</div></div>`}).join("");
+
+// next event
+(function(){const now=new Date();const fy0=new Date(2026,9,1);const mi=(now-fy0)/(30.44*864e5);
+ const up=E.filter(x=>x.comp&&(x.e??0)>mi).sort((a,b)=>a.s-b.s)[0];if(!up)return;
+ let extra="";if(up.date){const d=Math.ceil((new Date(up.date)-now)/864e5);extra=`<span class="num">อีก ${d} วัน</span>`;}
+ document.getElementById("next").innerHTML=`<span class="note">งานแข่งขันถัดไป</span><b>${up.t}</b><span>${up.d}</span>${extra}`;})();
+
+// gantt
+(function(){const g=document.getElementById("gantt");let h=`<div class="h" style="text-align:left;padding-left:10px">กิจกรรม</div>`;
+ MON.forEach((m,i)=>h+=`<div class="h${i%3==0?" q":""}">${m}<br><small>${i<3?"69":"70"}</small></div>`);
+ const groups=[["adm","งานบริหาร"],["p1","โครงการ 8 กลุ่มสาระ"],["p2","โครงการศตวรรษที่ 21"],["p3","โครงการพหุปัญญา"]];
+ groups.forEach(([k,lab])=>{h+=`<div class="grouprow" style="color:${P[k].c}">${lab}</div>`;
+  E.filter(x=>x.p===k).forEach(x=>{h+=`<div class="lbl" title="${x.t} · ${x.d}"><span class="dot" style="background:${P[x.p].c}"></span><span>${x.t}</span></div>`;
+   for(let i=0;i<12;i++){let bars="";
+    const segs=x.marks?x.marks.map(m=>[m,m+1]):[[x.s,x.e]];
+    segs.forEach(([s,e])=>{if(e>i&&s<i+1){const L=Math.max(0,s-i)*100,R=Math.max(0,i+1-e)*100;bars+=`<div class="bar${x.fixed?"":" tent"}" style="left:${L}%;right:${R}%;background:${P[x.p].c}"></div>`;}});
+    h+=`<div class="cell">${bars}</div>`;}});});
+ g.innerHTML=h;
+ // today line
+ const fy0=new Date(2026,9,1),mi=(new Date()-fy0)/(30.44*864e5);
+ if(mi>0&&mi<12){const line=document.createElement("div");line.style.cssText=`position:absolute;top:0;bottom:0;width:2px;background:var(--today);left:calc(min(260px,max(190px,(100% - 528px)*.3)) + 0px)`;
+  // place via grid columns: compute using cell positions after layout
+  requestAnimationFrame(()=>{const c=g.querySelectorAll(".h")[1+Math.floor(mi)];if(!c)return;line.style.left=(c.offsetLeft+c.offsetWidth*(mi%1))+"px";line.title="วันนี้";g.appendChild(line);});}
+})();
+
+// flow
+const FL=[["1 · เตรียม","ขออนุมัติ เช็กกติกา สมัครในระบบก่อนวันปิดรับ"],["2 · คัดเลือก","สอบด้วยข้อสอบเก่า เกณฑ์ 60% ประกาศผล"],["3 · ซ้อม","ฝึกตามตารางนัด ขอใบยินยอมผู้ปกครอง"],["4 · ไปราชการ","หนังสือขออนุญาต คำสั่ง รถ/ที่พัก เงินยืม"],["5 · แข่งขัน","บัตรเข้าสอบ เอกสาร ดูแลนักเรียน"],["6 · รายงาน","ส่งผล ภาพ เกียรติบัตร ล้างเงินยืม"]];
+document.getElementById("flow").innerHTML=FL.map(([k,p])=>`<div class="step"><div class="k">${k}</div><p>${p}</p></div>`).join("");
+
+}
+// filters + cards
+let F="all";let sel="all";try{sel=localStorage.getItem("mathplan_f")||"all"}catch(e){}F=sel;
+const FB=[["all","ทั้งหมด"],["comp","เฉพาะงานแข่งขัน"],["p1","8 กลุ่มสาระ"],["p2","ศตวรรษที่ 21"],["p3","พหุปัญญา"],["adm","งานบริหาร"]];
+function renderF(){document.getElementById("filters").innerHTML=FB.map(([k,l])=>`<button id="f-${k}" aria-pressed="${F===k}" data-k="${k}">${l}</button>`).join("");}
+function renderC(){const list=E.filter(x=>F==="all"||(F==="comp"?x.comp:x.p===F));
+ document.getElementById("cards").innerHTML=list.map(x=>{const done=x.tasks.filter((_,i)=>st[x.id+i]&&st[x.id+i].done).length,pct=Math.round(done/x.tasks.length*100);
+  return `<article class="card" style="--c:${P[x.p].c}"><div><h3>${x.t}</h3></div>
+  <div class="meta"><span>${x.d}</span><span class="pill ${x.fixed?"fixed":"tbd"}">${x.fixed?"วันชัดเจน":"รอกำหนดการ"}</span></div>
+  ${x.info?`<div class="note">${x.info}</div>`:""}
+  <div><div class="meta" style="justify-content:space-between"><span>ความคืบหน้า</span><span class="num">${done}/${x.tasks.length}</span></div><div class="prog"><div style="width:${pct}%"></div></div></div>
+  <div class="owner"><span>ผู้รับผิดชอบ</span><input id="o-${x.id}" data-o="${x.id}" placeholder="ใส่ชื่อครู" value="${(owners[x.id]||"").replace(/"/g,"&quot;")}" ${canWrite?"":"disabled"}></div>
+  <ul class="cl">${x.tasks.map((t,i)=>{const s=st[x.id+i];const by=s&&s.done&&s.by?`<span class="who" data-uid="${s.by}">✓ ${esc(s.by)}</span>`:"";return `<li><label><input type="checkbox" id="c-${x.id}-${i}" data-k="${x.id+i}" ${s&&s.done?"checked":""} ${canWrite?"":"disabled"}><span>${t}${by}</span></label></li>`}).join("")}</ul>
+  ${x.bud?`<div class="budget"><span>งบประมาณ (${P[x.p].s})</span><b class="num">${fmt(x.bud)} บาท</b></div>`:""}</article>`}).join("");}
+document.getElementById("filters").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;F=b.dataset.k;try{localStorage.setItem("mathplan_f",F)}catch(_){}renderF();renderC();});
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const note=t=>document.getElementById("syncnote").textContent=t;
+
+let st={},owners={},canWrite=false,FS=null,ME="";
+const $=id=>document.getElementById(id);
+function boot(){renderStatic();renderF();renderC();}
+function load(src){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+document.getElementById("cards").addEventListener("change",async e=>{
+ const k=e.target.dataset.k,o=e.target.dataset.o;if(!FS)return;
+ try{
+  if(k)await FS.doc('mathplan/checks').set({[k]:{done:e.target.checked,by:ME,at:Date.now()}},{merge:true});
+  if(o)await FS.doc('mathplan/owners').set({[o]:e.target.value.trim().slice(0,80)},{merge:true});
+ }catch(err){note("บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง");}
+});
+$('imp').onclick=()=>$('impF').click();
+$('impF').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+ try{const j=JSON.parse(await f.text());if(!j.projects||!Array.isArray(j.events))throw 0;
+  await FS.doc('mathplan/data').set({projects:j.projects,events:j.events,at:Date.now(),by:ME});note('นำเข้าข้อมูลแล้ว ✓')}
+ catch(err){note('ไฟล์ไม่ถูกต้อง หรือบัญชีนี้ไม่มีสิทธิ์บันทึก')}};
+let unsub=[];
+async function init(){
+ let cfg=null;for(const u of ['math-m1/config.json','https://mathdevth.github.io/math-m1/config.json']){try{const j=await fetch(u,{cache:'no-store'}).then(r=>r.ok?r.json():null);if(j&&j.firebase&&j.firebase.apiKey){cfg=j.firebase;break}}catch(e){}}
+ if(!cfg){$('login').hidden=false;$('lgM').textContent='ไม่พบค่า Firebase (ตรวจ config.json ของ math-m1)';return}
+ const v='https://cdn.jsdelivr.net/npm/firebase@10.12.2/';
+ await load(v+'firebase-app-compat.js');await load(v+'firebase-auth-compat.js');await load(v+'firebase-firestore-compat.js');
+ firebase.initializeApp(cfg);FS=firebase.firestore();const auth=firebase.auth();
+ $('login').onsubmit=async e=>{e.preventDefault();$('lgM').textContent='';try{await auth.signInWithEmailAndPassword($('lgE').value.trim(),$('lgP').value)}catch(err){$('lgM').textContent='อีเมลหรือรหัสผ่านไม่ถูกต้อง'}};
+ $('out').onclick=()=>auth.signOut();
+ auth.onAuthStateChanged(u=>{unsub.forEach(f=>f());unsub=[];$('app').hidden=true;
+  if(!u){$('login').hidden=false;return}
+  ME=(u.email||'').split('@')[0];$('who').textContent=u.email||'';
+  const denied=()=>{$('app').hidden=true;$('login').hidden=false;$('lgM').textContent='บัญชีนี้ไม่มีสิทธิ์เข้าหน้านี้';};
+  unsub.push(FS.doc('mathplan/data').onSnapshot(d=>{
+    $('login').hidden=true;$('app').hidden=false;canWrite=true;
+    if(!d.exists){note('ยังไม่มีข้อมูล กด "นำเข้าข้อมูล (.json)" ด้านบน เพื่อนำเข้าไฟล์แผนงาน');P={};E=[];document.getElementById('cards').innerHTML='';return}
+    const x=d.data();P=x.projects||{};E=(x.events||[]).map(e=>({...e,tasks:e.comp?[...(e.pre||[]),...COMP]:(e.tasks||[])}));
+    note('ข้อมูลร่วมของกลุ่มสาระ · ใครติ๊กหรือใส่ชื่อ อีกคนเห็นทันที');boot();
+  },denied));
+  unsub.push(FS.doc('mathplan/checks').onSnapshot(d=>{st=d.exists?d.data():{};const a=document.activeElement;if(E.length&&!(a&&a.dataset&&a.dataset.o))renderC()},()=>{}));
+  unsub.push(FS.doc('mathplan/owners').onSnapshot(d=>{owners=d.exists?d.data():{};const a=document.activeElement;if(E.length&&!(a&&a.dataset&&a.dataset.o))renderC()},()=>{}));
+ });
+}
+init();
+</script>
+<p class="note" style="text-align:center;padding:16px">ครูคุ้ม อชิตพล บุณรัตน์ · Math Lab</p>
+</body></html>
